@@ -19,7 +19,7 @@ create table employee(
     username varchar(29),
     password varchar(12),
     baseSalary decimal(9,2),
-    rate decimal (5,2),
+    rate decimal (5,2)
 );
 
 -- total pay is calculated using the info from employee table
@@ -53,7 +53,7 @@ create table leaverequests(
     employeeID varchar(4),
     startDate date,
     endDate date,
-    approval enum('Approved','Pending','Rejected'),
+    approval enum('Approved','Pending','Rejected') default 'Pending',
     approvedBy varchar(4),
     FOREIGN KEY (employeeID) references employee(employeeID)
     on delete cascade
