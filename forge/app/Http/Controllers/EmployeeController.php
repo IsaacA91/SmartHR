@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\DB;
 class EmployeeController extends Controller
 {
 
+    public function employeeFormPage(Request $request){
+        return view('employeeCreation');
+    }
+
     public function employeeForm(Request $request){
         $employee = $request->all();
 
-        DB::insert('insert into employee (employeeID, companyID, position, departmentID, firstName, lastName, phone, email, username, password, baseSalary, rate) Values (?,?,?,?,?)',
+        DB::insert('insert into employee (employeeID, companyID, position, departmentID, firstName, lastName, phone, email, username, password, baseSalary, rate) Values (?,?,?,?,?,?,?,?,?,?,?,?)',
         [
         $request->employeeID,
         $request->companyID,
