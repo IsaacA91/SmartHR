@@ -1,17 +1,34 @@
+--ID format DXXX
+--A company can have many departments
+create table department(
+	departmentID varchar(4) primary key,
+	departmentName varchar(50),
+	departmentManager varchar(50),
+	departmentLocation varchar(125)
+	companyID varchar(4),
+	foreign key companyID references company(companyID) on delete cascade
+);
+-- ID format CXXX
+create table company(
+	companyID varchar(4) primary key,
+	companyName varchar(50),
+	companyOwner varchar(50),
+);
 -- ID format AXXX
 create table admin(
     adminID varchar(4) PRIMARY Key,
     firstName varchar(25),
     lastName varchar(25),
-    company varchar(50),
-    password varchar(12)
+    companyID varchar(4),
+    password varchar(12),
+	foreign key companyID references company(companyID) on delete cascade
 );
 -- ID format EXXX
 create table employee(
     employeeID varchar(4) PRIMARY KEY,
-    company varchar(50),
+    companyID varchar(4),
     position varchar(25),
-    department varchar(50),
+    departmentID varchar(4),
     firstName varchar(25),
     lastName varchar(25),
     phone int,
@@ -20,8 +37,9 @@ create table employee(
     password varchar(12),
     baseSalary decimal(9,2),
     rate decimal (5,2)
+	foreign key companyID references company(companyID) on delete cascade,
+	foreign key departmentID references department(departmentID) on delete set null
 );
-
 -- total pay is calculated using the info from employee table
 -- ID Format SXXXX
 create table payslip(
