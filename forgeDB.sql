@@ -46,6 +46,18 @@ create table attendancerecord(
     FOREIGN KEY (employeeID) references employee(employeeID)
     on delete cascade
 );
+-- Each employee scheduled gets a row on the table allows multiple inputs for employees working extra shifts for the day
+-- Best to organize whos working by ordering it by shiftDate
+-- sample ID WXXX
+create table workSchedule(
+	scheduleID varchar(4) primary key,
+    employeeID varchar(4),
+    shiftDate date,
+    shiftBegin time,
+    shiftEnd time,
+    foreign key (employeeID) REFERENCES employee(employeeID) 
+    on delete cascade
+);
 -- leave requests have an id and an attached employee ID and have three options of approval approvedBy will be the adminID of whoever approves the request
 -- ID Format LXXXX
 create table leaverequests(
