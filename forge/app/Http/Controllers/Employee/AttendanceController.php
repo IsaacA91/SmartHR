@@ -12,16 +12,23 @@ class AttendanceController extends Controller
 {
     private function generateRecordID()
     {
-        $lastRecord = AttendanceRecord::orderBy('recordID', 'desc')->first();
+        $result = \DB::select("
+            SELECT MAX(CAST(SUBSTRING(recordID, 2) AS UNSIGNED)) as max_id 
+            FROM attendancerecord 
+            WHERE recordID REGEXP '^R[0-9]+\$'
+        ");
 
-        if ($lastRecord) {
-            $lastNumber = intval(substr($lastRecord->recordID, 1));
-            $newNumber = $lastNumber + 1;
-        } else {
-            $newNumber = 1;
+        $maxId = $result[0]->max_id;
+        $newNumber = $maxId ? $maxId + 1 : 1;
+
+        $newId = 'R' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+
+        while (AttendanceRecord::where('recordID', $newId)->exists()) {
+            $newNumber++;
+            $newId = 'R' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
         }
 
-        return 'R' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        return $newId;
     }
 
     public function showHistory(Request $request)
@@ -50,11 +57,19 @@ class AttendanceController extends Controller
         $employeeID = $employee->employeeID;
         $today = Carbon::today()->toDateString();
 
-        // Get today's record for clock in/out status
+        // Prefer an open record (no timeOut) for today's clock status; otherwise use the latest record
         $latestRecord = AttendanceRecord::where('employeeID', $employeeID)
             ->where('workDay', $today)
+            ->whereNull('timeOut')
             ->orderBy('recordID', 'desc')
             ->first();
+
+        if (!$latestRecord) {
+            $latestRecord = AttendanceRecord::where('employeeID', $employeeID)
+                ->where('workDay', $today)
+                ->orderBy('recordID', 'desc')
+                ->first();
+        }
 
         // Get monthly stats
         $month_start = Carbon::now()->startOfMonth()->toDateString();
@@ -65,7 +80,13 @@ class AttendanceController extends Controller
             ->selectRaw('COUNT(DISTINCT workDay) as total_days, SUM(hoursWorked) as total_hours, AVG(hoursWorked) as avg_hours')
             ->first();
 
-        return view('attendance.dashboard', compact('latestRecord', 'employee', 'employeeID', 'stats'));
+        // Today's sessions (all records for today) to show multiple in/out pairs
+        $todayRecords = AttendanceRecord::where('employeeID', $employeeID)
+            ->where('workDay', $today)
+            ->orderBy('recordID', 'desc')
+            ->get();
+
+        return view('attendance.dashboard', compact('latestRecord', 'employee', 'employeeID', 'stats', 'todayRecords'));
     }
 
     public function clockAction(Request $request)
@@ -78,18 +99,38 @@ class AttendanceController extends Controller
         $employeeID = $employee->employeeID;
         $today = Carbon::today()->toDateString();
 
-        $record = AttendanceRecord::where('employeeID', $employeeID)
+        // Find the most recent open record for today (if any)
+        $openRecord = AttendanceRecord::where('employeeID', $employeeID)
             ->where('workDay', $today)
+            ->whereNull('timeOut')
+            ->orderBy('recordID', 'desc')
             ->first();
 
-        if ($request->input('action') === 'clock_in' && !$record) {
+        // CLOCK IN: allow new clock-in if there is no open record for today (so you can clock in/out multiple times per day,
+        // each pair will be a separate record; stats use DISTINCT workDay so total days won't increase for same day)
+        if ($request->input('action') === 'clock_in') {
+            if ($openRecord) {
+                return redirect()->back()->with('error', 'You are already clocked in. Please clock out first.');
+            }
+
             try {
-                AttendanceRecord::create([
-                    'recordID' => $this->generateRecordID(),
-                    'employeeID' => $employeeID,
-                    'workDay' => $today,
-                    'timeIn' => Carbon::now()->toTimeString(),
-                ]);
+                $success = \DB::transaction(function () use ($employeeID, $today) {
+                    $recordID = $this->generateRecordID();
+
+                    // Double-check inside transaction that ID is unique
+                    if (AttendanceRecord::where('recordID', $recordID)->exists()) {
+                        throw new \Exception('Failed to generate unique record ID. Please try again.');
+                    }
+
+                    AttendanceRecord::create([
+                        'recordID' => $recordID,
+                        'employeeID' => $employeeID,
+                        'workDay' => $today,
+                        'timeIn' => Carbon::now()->toTimeString(),
+                    ]);
+
+                    return true;
+                });
 
                 return redirect()->back()->with('success', 'Clocked in successfully!');
             } catch (\Exception $e) {
@@ -97,13 +138,18 @@ class AttendanceController extends Controller
             }
         }
 
-        if ($request->input('action') === 'clock_out' && $record && !$record->timeOut) {
+        // CLOCK OUT: close the most recent open record for today
+        if ($request->input('action') === 'clock_out') {
+            if (!$openRecord) {
+                return redirect()->back()->with('error', 'No open clock-in found for today.');
+            }
+
             try {
-                $arrivalTime = Carbon::parse($record->timeIn);
+                $arrivalTime = Carbon::parse($openRecord->timeIn);
                 $departureTime = Carbon::now();
                 $totalHours = $departureTime->diffInMinutes($arrivalTime) / 60;
 
-                $record->update([
+                $openRecord->update([
                     'timeOut' => $departureTime->toTimeString(),
                     'hoursWorked' => round($totalHours, 1),
                 ]);
@@ -131,7 +177,7 @@ class AttendanceController extends Controller
 
         $headers = array(
             'Content-type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename=attendance_history.csv',
+            'Content-Disposition' => 'attachment; filename=Mr_how_are_you_doing.csv',
             'Pragma' => 'no-cache',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Expires' => '0'

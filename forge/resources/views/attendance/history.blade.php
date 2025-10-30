@@ -150,7 +150,7 @@
                 </div>
             </div>
 
-            <!-- Pagination -->
+            <!-- Pagination for ... -->
             <div class="d-flex justify-content-between align-items-center mt-4">
                 {{ $records->links() }}
                 

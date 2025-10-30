@@ -166,6 +166,45 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
                         </form>
                     </div>
 
+                    <!-- Today's Sessions -->
+                    <h5 class="mb-3">Today's Sessions</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Hours</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(isset($todayRecords) && $todayRecords->count())
+                                    @foreach($todayRecords as $t)
+                                        <tr>
+                                            <td>{{ $t->timeIn ? \Carbon\Carbon::parse($t->timeIn)->format('h:i A') : '-' }}</td>
+                                            <td>{{ $t->timeOut ? \Carbon\Carbon::parse($t->timeOut)->format('h:i A') : '<span class="text-warning">Still Clocked In</span>' }}</td>
+                                            <td>{{ $t->hoursWorked ? number_format($t->hoursWorked, 1) . ' hrs' : '-' }}</td>
+                                            <td>
+                                                @if($t->timeOut && $t->hoursWorked >= 8)
+                                                    <span class="badge bg-success">Present</span>
+                                                @elseif($t->timeOut && $t->hoursWorked > 0)
+                                                    <span class="badge bg-warning">Partial</span>
+                                                @else
+                                                    <span class="badge bg-info">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No sessions for today.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+
                     <!-- Monthly Statistics -->
 
                     <!-- Monthly Statistics -->

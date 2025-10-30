@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Employee;
 
 class AttendanceRecord extends Model
 {
@@ -21,6 +22,6 @@ class AttendanceRecord extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::clas, 'employeeID', 'employeeID');
+        return $this->belongsTo(Employee::class, 'employeeID', 'employeeID');
     }
 }
