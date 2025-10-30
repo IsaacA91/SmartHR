@@ -1,64 +1,58 @@
-<?php
-// you got it folks time for how these functions work
-require_once 'db_config.php';
+@php
+use Carbon\Carbon;
+use App\Models\AttendanceRecord;
 
-if (!isset($_SESSION['employeeID'])) {
-    header('Location: login.php');
-    exit();
-}  // this checks if the user is logged in if not it will redirect to login
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: attendance.php');
-    exit();
-}  // this makes sure it was submitted via post,so if some naughty person tried cheating into then they get sent to attendance page
-
-$employeeID = $_SESSION['employeeID'];
-$action = $_POST['action'];
-$today = date('Y-m-d');
-$current_time = date('H:i:s');
+$employee = Auth::guard('employee')->user();
+$employeeID = $employee->employeeID;
+$action = request('action');
+$today = Carbon::today()->toDateString();
+$current_time = Carbon::now()->format('H:i:s');
 // this grabs the logged in users ID and gets the action clock in or clock out and captures the current date and time
 
-function generateRecordID($conn)
+function generateRecordID()
 {
-    $query = 'SELECT recordID FROM attendancerecord ORDER BY recordID DESC LIMIT 1';
-    $result = mysqli_query($conn, $query);
-
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $lastID = $row['recordID'];
+    $lastRecord = AttendanceRecord::orderBy('recordID', 'desc')->first();
+    
+    if ($lastRecord) {
+        $lastID = $lastRecord->recordID;
         $number = intval(substr($lastID, 1)) + 1;
         return 'R' . str_pad($number, 5, '0', STR_PAD_LEFT);
-    } else {
-        return 'R00001';
     }
-}  // fetches the latest recordID from the table, and makes suer each one is uniqge by padding it with 0's
+    
+    return 'R00001';
+}
 
-if ($action === 'clock_in') {  // checks if already clocked in
-    $check_query = "SELECT * FROM attendancerecord WHERE employeeID = '$employeeID' AND workDay = '$today' AND timeOut IS NULL";  // makes sure there are no duplicate lock in for the same day
-    $check_result = mysqli_query($conn, $check_query);
+if ($action === 'clock_in') {
+    // Check if already clocked in
+    $existingRecord = AttendanceRecord::where('employeeID', $employeeID)
+        ->where('workDay', $today)
+        ->whereNull('timeOut')
+        ->first();
 
-    if (mysqli_num_rows($check_result) > 0) {
-        $_SESSION['message'] = 'You are already clocked in!';
-        header('Location: attendance.php');
-        exit();
+    if ($existingRecord) {
+        return redirect()->route('attendance.dashboard')->with('error', 'You are already clocked in!');
     }
 
-    $recordID = generateRecordID($conn);  // generate new record ID
-    // insert new record
-    $insert_query = "INSERT INTO attendancerecord (recordID, employeeID, workDay, timeIn) 
-                     VALUES ('$recordID', '$employeeID', '$today', '$current_time')";
-
-    if (mysqli_query($conn, $insert_query)) {
-        $_SESSION['message'] = 'Successfully clocked in at ' . date('h:i A', strtotime($current_time));  // feedback from the session
-    } else {
-        $_SESSION['message'] = 'Error clocking in: ' . mysqli_error($conn);
+    $recordID = generateRecordID();
+    
+    // Create new record
+    try {
+        AttendanceRecord::create([
+            'recordID' => $recordID,
+            'employeeID' => $employeeID,
+            'workDay' => $today,
+            'timeIn' => $current_time
+        ]);
+        
+        return redirect()->route('attendance.dashboard')
+            ->with('success', 'Successfully clocked in at ' . Carbon::parse($current_time)->format('h:i A'));
+    } catch (\Exception $e) {
+        return redirect()->route('attendance.dashboard')
+            ->with('error', 'Error clocking in: ' . $e->getMessage());
     }
-} elseif ($action === 'clock_out') {  // clock out function
-    $recordID = $_POST['recordID'];
-
-    $get_query = "SELECT timeIn FROM attendancerecord WHERE recordID = '$recordID'";  // gets timein from the record
-    $get_result = mysqli_query($conn, $get_query);
-    $record = mysqli_fetch_assoc($get_result);
+} elseif ($action === 'clock_out') {
+    $recordID = request('recordID');
+    $record = AttendanceRecord::where('recordID', $recordID)->first();
 
     if ($record) {
         $time_in = strtotime($today . ' ' . $record['timeIn']);
