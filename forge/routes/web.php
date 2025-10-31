@@ -11,5 +11,9 @@ Route::get('/employeeProfile', function (){
     return view('employeeProfile');
 });
 
+// Creates employee
 Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ]);
 Route::post('/test', [EmployeeController::class, 'employeeForm' ]);
+
+//signinPage
+Route::get('/signinPage', [EmployeeController::class, 'landingPage']);

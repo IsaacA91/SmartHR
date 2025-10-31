@@ -35,4 +35,9 @@ class EmployeeController extends Controller
 
     }
 
+    public function signinPage() {
+    return view('signinPage');
+}
+
+
 }
