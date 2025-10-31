@@ -37,6 +37,10 @@ return [
             'driver' => 'session',
             'provider' => 'employees',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -56,10 +60,13 @@ return [
      * |
      */
     'providers' => [
-        // ... (existing 'users' provider)
         'employees' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Employee::class,  // Links to your Employee Model
+            'model' => App\Models\Employee::class,
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
     ],
     // 'users' => [

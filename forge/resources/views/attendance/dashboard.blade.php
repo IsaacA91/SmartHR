@@ -36,18 +36,38 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance - SmartHR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #FC703C 0%, #FFA18F 100%);
-            min-height: 100vh;
+        :root {
+            --primary-blue: #4849E8;
+            --light-blue: #ABC4FF;
+            --neon-yellow: #DDF344;
+            --white: #F5F9FF;
+            --card-shadow: 0 8px 24px rgba(72, 73, 232, 0.15);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-blue);
+            min-height: 100vh;
+            color: var(--primary-blue);
+            background-image: radial-gradient(circle at 50% 50%, rgba(171, 196, 255, 0.1) 0%, rgba(72, 73, 232, 0.2) 100%);
+        }
+
         .attendance-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            padding: 30px;
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            border: 1px solid rgba(72, 73, 232, 0.1);
+            margin: 2rem auto;
+            max-width: 1200px;
             margin-top: 50px;
         }
         .clock-display {

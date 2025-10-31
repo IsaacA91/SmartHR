@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SmartHR</title>
+    <title>Admin Login - SmartHR</title>
     <style>
         :root {
             --primary-blue: #4849E8;
@@ -13,34 +13,30 @@
             --card-shadow: 0 8px 24px rgba(72, 73, 232, 0.15);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--primary-blue);
-            min-height: 100vh;
+            margin: 0;
+            padding: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 2rem;
+            align-items: center;
+            min-height: 100vh;
             background-image: radial-gradient(circle at 50% 50%, rgba(171, 196, 255, 0.1) 0%, rgba(72, 73, 232, 0.2) 100%);
         }
 
-        .login-card {
+        .login-container {
             background-color: var(--white);
-            border-radius: 24px;
             padding: 3rem;
+            border-radius: 24px;
             box-shadow: var(--card-shadow);
             width: 100%;
             max-width: 400px;
             position: relative;
+            overflow: hidden;
         }
 
-        .login-card::before {
+        .login-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -48,23 +44,32 @@
             right: 0;
             height: 4px;
             background: var(--neon-yellow);
-            border-radius: 24px 24px 0 0;
         }
 
-        h3 {
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
             color: var(--primary-blue);
             font-size: 2rem;
             font-weight: 800;
-            margin-bottom: 2rem;
-            text-align: center;
+            margin-bottom: 0.75rem;
             letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--primary-blue);
+            opacity: 0.8;
+            font-size: 1.1rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 0.75rem;
             color: var(--primary-blue);
@@ -74,7 +79,7 @@
             letter-spacing: 0.5px;
         }
 
-        input {
+        .form-group input {
             width: 100%;
             padding: 1rem;
             border: 2px solid var(--light-blue);
@@ -83,16 +88,15 @@
             background: white;
             transition: all 0.2s;
             color: var(--primary-blue);
-            margin-bottom: 1rem;
         }
 
-        input:focus {
+        .form-group input:focus {
             outline: none;
             border-color: var(--primary-blue);
             box-shadow: 0 0 0 4px rgba(72, 73, 232, 0.1);
         }
 
-        button {
+        .submit-button {
             width: 100%;
             padding: 1rem;
             background-color: var(--primary-blue);
@@ -105,29 +109,26 @@
             transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 1rem;
         }
 
-        button:hover {
+        .submit-button:hover {
             background-color: var(--neon-yellow);
             color: var(--primary-blue);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(72, 73, 232, 0.2);
         }
 
-        .error-message {
-            background-color: #FF4D4D15;
+        .error {
             color: #FF4D4D;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .error-message::before {
+        .error::before {
             content: '!';
             display: inline-flex;
             align-items: center;
@@ -139,46 +140,36 @@
             border-radius: 50%;
             font-weight: bold;
         }
-
-        hr {
-            margin: 2rem 0;
-            border: none;
-            border-top: 2px solid var(--light-blue);
-            opacity: 0.2;
-        }
-
-        .test-account {
-            text-align: center;
-            color: var(--primary-blue);
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h3>Employee Login</h3>
-        
-        @if ($errors->any())
-            <div class="error-message">
-                {{ $errors->first('username') }}
-            </div>
-        @endif
+    <div class="login-container">
+        <div class="header">
+            <h1>Admin Login</h1>
+            <p>Please sign in to continue</p>
+        </div>
 
-        <form method="POST" action="{{ route('employee.login') }}">
-            @csrf 
+        <form method="POST" action="{{ route('admin.login') }}">
+            @csrf
+
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" value="{{ old('username') }}" required>
+                <label for="adminID">Admin ID</label>
+                <input type="text" id="adminID" name="adminID" value="{{ old('adminID') }}" required autofocus maxlength="4" placeholder="AXXX">
+                @error('adminID')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
+
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" required>
+                <input type="password" id="password" name="password" required maxlength="12">
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
-            <button type="submit">Login</button>
+
+            <button type="submit" class="submit-button">Login</button>
         </form>
-        <hr>
-        <p class="test-account">Test Account: asmith / pass123</p>
     </div>
 </body>
 </html>
