@@ -39,5 +39,33 @@ class EmployeeController extends Controller
     return view('signinPage');
 }
 
+public function login(REQUEST $request){
+     $username = $request->input('username');
+     $password = $request->input('password');
+
+     $employee = DB::table('employee')
+            ->where('username', $username)
+            ->where('password', $password) 
+            ->first();
+
+       if ($employee) {
+            // Store user info in session
+            session(['employee' => $employee]);
+            return redirect()->route('employee.profile');
+        } else {
+            return back()->withErrors(['Invalid username or password']);
+        }     
+
+} 
+
+public function employeeProfile()
+    {
+        $employee = session('employee');
+        if (!$employee) {
+            return redirect()->route('signinPage');
+        }
+
+        return view('employeeProfile', ['employee' => $employee]);
+    }
 
 }

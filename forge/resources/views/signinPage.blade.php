@@ -4,7 +4,8 @@
         Welcome to Smart HR
 </h1>
 
-    <form  method="post">
+    <form  method="post" action="{{ route('employee.login') }}">
+        @csrf
     User Name: <input type="text"  name="username" required>
     <br>
     Password: <input type="password" name="password" required>

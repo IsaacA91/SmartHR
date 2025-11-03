@@ -7,13 +7,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/employeeProfile', function (){
-    return view('employeeProfile');
-});
+
 
 // Creates employee
 Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ]);
 Route::post('/test', [EmployeeController::class, 'employeeForm' ]);
 
 //signinPage
-Route::get('/signinPage', [EmployeeController::class, 'landingPage']);
+Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
+Route::post('/employeeProfile', [EmployeeController::class, 'login'])->name('employee.login');
+Route::get('/employeeProfile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');

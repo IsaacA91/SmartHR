@@ -6,8 +6,8 @@
     </head>
 
     <body>
-        <div class="profile-box">
-            <h1>help</h1>
-        </div>    
+   
+    <p>Name: {{ $employee->firstName }} {{ $employee->lastName }}</p>
+    <p>Position: {{ $employee->position}}</p>
     </body>
 </html>
