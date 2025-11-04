@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Dashboard</title>
     <style>
         :root {
@@ -136,6 +137,62 @@
             font-style: italic;
         }
 
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .status-approved {
+            background-color: #DCFCE7;
+            color: #15803D;
+        }
+
+        .status-rejected {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .approve-btn {
+            background-color: #DCFCE7;
+            color: #15803D;
+        }
+
+        .approve-btn:hover {
+            background-color: #BBF7D0;
+        }
+
+        .reject-btn {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .reject-btn:hover {
+            background-color: #FECACA;
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -200,8 +257,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Employee</th>
-                            <th>Type</th>
+                            <th>Employee ID</th>
+                            <th>Employee Name</th>
+                            <th>Department</th>
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Status</th>
@@ -209,12 +267,35 @@
                     </thead>
                     <tbody>
                         @foreach($recentLeaveRequests as $request)
-                        <tr>
-                            <td>{{ $request->employee_name }}</td>
-                            <td>{{ $request->type }}</td>
-                            <td>{{ $request->start_date }}</td>
-                            <td>{{ $request->end_date }}</td>
-                            <td>{{ $request->status }}</td>
+                        <tr data-leave-request="{{ $request->leaveRecordID }}">
+                            <td>{{ $request->employeeID }}</td>
+                            <td>{{ $request->employeeName }}</td>
+                            <td>{{ $request->departmentName }}</td>
+                            <td>{{ \Carbon\Carbon::parse($request->startDate)->format('M d, Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($request->endDate)->format('M d, Y') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ strtolower($request->approval) }}">
+                                    {{ $request->approval }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                @if($request->approval === 'Pending')
+                                    <button 
+                                        type="button"
+                                        class="action-btn approve-btn"
+                                        data-id="{{ $request->leaveRecordID }}"
+                                    >
+                                        Approve
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        class="action-btn reject-btn"
+                                        data-id="{{ $request->leaveRecordID }}"
+                                    >
+                                        Reject
+                                    </button>
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -227,6 +308,74 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners to all approve buttons
+        document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('Approve button clicked');
+                const leaveRecordID = this.getAttribute('data-id');
+                updateLeaveRequest(leaveRecordID, 'Approved');
+            });
+        });
+
+        // Add event listeners to all reject buttons
+        document.querySelectorAll('.reject-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('Reject button clicked');
+                const leaveRecordID = this.getAttribute('data-id');
+                updateLeaveRequest(leaveRecordID, 'Rejected');
+            });
+        });
+    });
+
+    function updateLeaveRequest(leaveRecordID, status) {
+        console.log('Updating leave request:', { leaveRecordID, status });
+        
+        // Get the CSRF token from the meta tag
+        const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        console.log('CSRF Token:', csrf);
+        
+        fetch(`/admin/leave-request/${leaveRecordID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                // Update the status badge
+                const row = document.querySelector(`tr[data-leave-request="${leaveRecordID}"]`);
+                const statusBadge = row.querySelector('.status-badge');
+                statusBadge.className = `status-badge status-${status.toLowerCase()}`;
+                statusBadge.textContent = status;
+                
+                // Remove the action buttons
+                const actionsCell = row.querySelector('.actions');
+                actionsCell.innerHTML = '';
+                
+                // Show success message
+                alert('Leave request has been ' + status.toLowerCase());
+            } else {
+                alert('Failed to update leave request status. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the leave request status: ' + error.message);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Attendance Trends Chart
         const attendanceData = @json($attendanceTrends);
@@ -296,6 +445,6 @@
             }
         });
     });
-    </script>
+</script>
 </body>
 </html>

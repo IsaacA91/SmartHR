@@ -13,6 +13,29 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function updateLeaveRequest(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Approved,Rejected'
+        ]);
+
+        $leaveRequest = LeaveRequest::where('leaveRecordID', $id)
+        ->update(
+            [
+                'approval' => $request->status,
+                'approvedBy' => Auth::guard('admin')->user()->adminID,
+            ]
+        );
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave request ' . strtolower($request->status),
+            'status' => $request->status
+        ]);
+    }
+
     public function dashboard()
     {
         // Get admin's company ID
@@ -41,12 +64,17 @@ class AdminController extends Controller
             ->where('employee.companyID', $companyID)
             ->sum(DB::raw('hoursWorked * rate'));
 
-        // Get pending leave requests for the company
-        $recentLeaveRequests = LeaveRequest::whereIn('employeeID', function($query) use ($companyID) {
-                $query->select('employeeID')
-                      ->from('employee')
-                      ->where('companyID', $companyID);
-            })
+        // Get pending leave requests for the company with employee names
+        $recentLeaveRequests = LeaveRequest::select(
+                'leaverequests.*',
+                'employee.firstName',
+                'employee.lastName',
+                DB::raw("CONCAT(employee.firstName, ' ', employee.lastName) as employeeName"),
+                'department.departmentName'
+            )
+            ->join('employee', 'leaverequests.employeeID', '=', 'employee.employeeID')
+            ->leftJoin('department', 'employee.departmentID', '=', 'department.departmentID')
+            ->where('employee.companyID', $companyID)
             ->where('approval', 'Pending')
             ->orderBy('startDate')
             ->take(5)

@@ -42,6 +42,7 @@ Route::prefix('admin')->group(function () {
     // Protected admin routes
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::post('/leave-request/{id}', [AdminController::class, 'updateLeaveRequest'])->name('admin.leave-requests.update');
         Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         });

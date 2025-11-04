@@ -10,7 +10,7 @@ class LeaveRequest extends Model
     protected $primaryKey = 'leaveRecordID';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    public $timestamps = false;
     protected $fillable = [
         'leaveRecordID',
         'employeeID',
