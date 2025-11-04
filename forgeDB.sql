@@ -20,7 +20,7 @@ create table admin(
     firstName varchar(25),
     lastName varchar(25),
     companyID varchar(4),
-    password varchar(12),
+    password varchar(255),
 	foreign key (companyID) references company(companyID) on delete cascade
 );
 -- ID format EXXX
@@ -31,10 +31,10 @@ create table employee(
     departmentID varchar(4),
     firstName varchar(25),
     lastName varchar(25),
-    phone int,
+    phone varchar(20),
     email varchar(50),
     username varchar(29),
-    password varchar(12),
+    password varchar(255),
     baseSalary decimal(9,2),
     rate decimal (5,2),
 	foreign key (companyID) references company(companyID) on delete cascade,
