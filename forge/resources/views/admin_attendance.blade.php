@@ -42,110 +42,30 @@ $absent = $stats['total_employees'] - $stats['present'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary-blue: #4849E8;
-            --light-blue: #ABC4FF;
-            --accent-yellow: #DDF344;
-            --bg-white: #F5F9FF;
-        }
-
         body {
-            background: var(--primary-blue);
+            background: #f8f9fa;
         }
-
         .admin-card {
-            background: var(--bg-white);
+            background: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             padding: 30px;
             margin-top: 30px;
         }
-
         .stat-card {
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            color: var(--bg-white);
+            color: white;
         }
-
         .stat-present {
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
-
         .stat-absent {
-            background: var(--light-blue);
-            color: var(--primary-blue);
+            background: linear-gradient(135deg, #dc3545 0%, #f86734 100%);
         }
-
         .stat-total {
-            background: var(--accent-yellow);
-            color: var(--primary-blue);
-        }
-
-        .btn-primary {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
-            color: var(--bg-white);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--light-blue);
-            border-color: var(--light-blue);
-            color: var(--primary-blue);
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--light-blue);
-            box-shadow: 0 0 0 0.25rem rgba(72, 73, 232, 0.25);
-        }
-
-        .table-dark {
-            background-color: var(--primary-blue);
-        }
-
-        .badge.bg-success {
-            background-color: var(--accent-yellow) !important;
-            color: var(--primary-blue);
-        }
-
-        .badge.bg-warning {
-            background-color: var(--light-blue) !important;
-            color: var(--primary-blue);
-        }
-
-        .badge.bg-danger {
-            background-color: var(--light-blue) !important;
-            color: var(--primary-blue);
-        }
-
-        .badge.bg-info {
-            background-color: var(--primary-blue) !important;
-            color: var(--accent-yellow);
-        }
-
-        .text-success {
-            color: var(--accent-yellow) !important;
-        }
-
-        .text-danger {
-            color: var(--light-blue) !important;
-        }
-
-        h2 {
-            color: var(--primary-blue);
-        }
-
-        .form-label {
-            color: var(--primary-blue);
-        }
-
-        .table {
-            --bs-table-hover-bg: var(--bg-white);
-            --bs-table-hover-color: var(--primary-blue);
-        }
-
-        .text-center {
-            color: var(--primary-blue);
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
         }
     </style>
 </head>

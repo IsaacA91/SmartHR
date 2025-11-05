@@ -17,7 +17,7 @@ return new class extends Migration
         // Create the table with the exact structure from the schema
         Schema::create('leaverequests', function (Blueprint $table) {
             $table->string('leaveRecordID', 5)->primary();
-            $table->string('employeeID', 4);
+            $table->string('employeeID', 4)->collation('utf8mb4_unicode_ci');
             $table->date('startDate');
             $table->date('endDate');
             $table->enum('approval', ['Approved', 'Pending', 'Rejected'])->default('Pending');
