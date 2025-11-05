@@ -39,52 +39,145 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
+        :root {
+            --primary-blue: #4849E8;
+            --light-blue: #ABC4FF;
+            --accent-yellow: #DDF344;
+            --bg-white: #F5F9FF;
+        }
+
         body {
-            background: linear-gradient(135deg, #FC703C 0%, #FFA18F 100%);
+            background: var(--primary-blue);
             min-height: 100vh;
         }
+
         .attendance-card {
-            background: white;
+            background: var(--bg-white);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 30px;
             margin-top: 50px;
         }
+
         .clock-display {
             font-size: 3rem;
             font-weight: bold;
-            color: #5D0703;
+            color: var(--primary-blue);
             font-family: 'Courier New', monospace;
         }
+
         .status-badge {
             font-size: 1.2rem;
             padding: 10px 20px;
             border-radius: 50px;
         }
+
         .clock-btn {
             padding: 15px 50px;
             font-size: 1.2rem;
             border-radius: 50px;
             transition: all 0.3s;
         }
+
         .clock-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+
+        .btn-success.clock-btn {
+            background-color: var(--accent-yellow);
+            border-color: var(--accent-yellow);
+            color: var(--primary-blue);
+        }
+
+        .btn-danger.clock-btn {
+            background-color: var(--light-blue);
+            border-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
         .stats-card {
-            background: linear-gradient(135deg, #5D0703 0%, #FC703C 100%);
-            color: white;
+            background: var(--primary-blue);
+            color: var(--accent-yellow);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .stats-card h5 {
             font-size: 0.9rem;
             opacity: 0.9;
+            color: var(--bg-white);
         }
+
         .stats-card h3 {
             font-size: 2rem;
             font-weight: bold;
+        }
+
+        .btn-outline-secondary {
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-blue);
+            color: var(--accent-yellow);
+        }
+
+        .btn-outline-warning {
+            color: var(--primary-blue);
+            border-color: var(--light-blue);
+        }
+
+        .alert-success {
+            background-color: var(--accent-yellow);
+            border-color: var(--accent-yellow);
+            color: var(--primary-blue);
+        }
+
+        .alert-danger {
+            background-color: var(--light-blue);
+            border-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .table {
+            --bs-table-hover-bg: var(--bg-white);
+            --bs-table-hover-color: var(--primary-blue);
+        }
+
+        .badge.bg-success {
+            background-color: var(--accent-yellow) !important;
+            color: var(--primary-blue);
+        }
+
+        .badge.bg-warning {
+            background-color: var(--light-blue) !important;
+            color: var(--primary-blue);
+        }
+
+        .badge.bg-info {
+            background-color: var(--primary-blue) !important;
+            color: var(--accent-yellow);
+        }
+
+        .text-warning {
+            color: var(--accent-yellow) !important;
+        }
+
+        .text-muted {
+            color: var(--light-blue) !important;
         }
     </style>
 </head>
@@ -182,9 +275,9 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
                                 @if(isset($todayRecords) && $todayRecords->count())
                                     @foreach($todayRecords as $t)
                                         <tr>
-                                            <td>{{ $t->timeIn ? \Carbon\Carbon::parse($t->timeIn)->format('h:i A') : '-' }}</td>
-                                            <td>{{ $t->timeOut ? \Carbon\Carbon::parse($t->timeOut)->format('h:i A') : '<span class="text-warning">Still Clocked In</span>' }}</td>
-                                            <td>{{ $t->hoursWorked ? number_format($t->hoursWorked, 1) . ' hrs' : '-' }}</td>
+                                            <td>{!! $t->timeIn ? \Carbon\Carbon::parse($t->timeIn)->format('h:i A') : '-' !!}</td>
+                                            <td>{!! $t->timeOut ? \Carbon\Carbon::parse($t->timeOut)->format('h:i A') : '<span class="text-warning">Still Clocked In</span>' !!}</td>
+                                            <td>{!! $t->hoursWorked ? number_format($t->hoursWorked, 1) . ' hrs' : '-' !!}</td>
                                             <td>
                                                 @if($t->timeOut && $t->hoursWorked >= 8)
                                                     <span class="badge bg-success">Present</span>
