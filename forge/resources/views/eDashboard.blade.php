@@ -10,7 +10,7 @@
 
 <div class="container dash">
     <h1 class="greeting">Welcome back, {{$employee->firstName}}!</h1>
-    <a href="{{ route('employeeProfile',['id' => $employee->employeeID])}}" class="profile-link">
+    <a href="{{ route('employee.profile',['id' => $employee->employeeID])}}" class="profile-link">
         <i class="bi bi-person-circle"></i>
         <p class="view">View Profile</p>
     </a>

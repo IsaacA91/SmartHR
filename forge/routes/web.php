@@ -12,5 +12,5 @@ Route::get('/', function () {
 Route::get('/eDashboard', function (){
     $employee = Employee::find('E001'); 
     return view('eDashboard', ['employee' => $employee]);
-});
-Route::get('/employeeProfile/{id}', [EmployeeController::class, 'show'])->name('employeeProfile');
+})->name('employee.dashboard');
+Route::get('/employeeProfile/{id}', [EmployeeController::class, 'show'])->name('employee.profile');

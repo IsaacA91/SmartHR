@@ -17,7 +17,7 @@
             <img src="{{ asset('images/SHRLogo.png')}}" alt="SmartHR Logo">
         </div>
         <div class="navbar">
-            <a href="#">Home</a>
+            <a href="{{ route('employee.dashboard') }}">Home</a>
             <a href="#">Attendance</a>
             <a href="#">Vacation</a>
             <a href="#">Payroll</a>

@@ -9,8 +9,7 @@ use App\Models\Employee;
 class EmployeeController extends Controller
 {
     public function show($id){
-    $employee = Employee::find($id);
-    return view('employeeProfile', compact('employee'));
+        $employee = Employee::findOrFail($id);
+        return view('employeeProfile', compact('employee'));
     }
-
 }
