@@ -1,6 +1,4 @@
 <?php
-
-use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Employee;
 use App\Http\Controllers\EmployeeController;
