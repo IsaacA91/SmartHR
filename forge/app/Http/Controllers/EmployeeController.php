@@ -100,4 +100,19 @@ class EmployeeController extends Controller
 
         return view('employeeProfile', ['employee' => $employee]);
     }
+
+    public function viewEditEmployee(){
+        return view('editEmployee');
+    }
+public function editEmployee(Request $request){
+    $employee = DB::table('employee')
+    ->where('employeeID', $request->employeeID)
+    ->update([
+        'firstName' => $request->firstName,
+        'lastName' => $request->lastName,
+        'email' => $request->email,
+        'position' => $request->position
+    ]);
+    return redirect('/editEmployee');
+}
 }
