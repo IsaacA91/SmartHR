@@ -1,3 +1,8 @@
+@extends('layouts.app')
+
+@section('title', 'Dashboard')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,8 +164,7 @@
 
 <body>
     <div class="container">
-        <h1>Admin Dashboard</h1>
-        
+        <h1 style='border-bottom:5px solid var(--primary-blue)'>{{$companyName}}</h1>
         <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stats-card">
@@ -309,3 +313,4 @@
     </script>
 </body>
 </html>
+@endsection

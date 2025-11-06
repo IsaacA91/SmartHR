@@ -17,10 +17,10 @@ class AdminController extends Controller
     {
         // Get admin's company ID
         $companyID = Auth::guard('admin')->user()->companyID;
-
+        $companyName = Auth::guard('admin')->user()->company->companyName;
         // Get total employees in the company using explicit collation
         $totalEmployees = Employee::whereRaw('companyID COLLATE utf8mb4_unicode_ci = ?', [$companyID])->count();
-
+        
         // Get present and absent employees today
         $today = Carbon::today();
         $presentToday = AttendanceRecord::whereDate('workDay', $today)
@@ -58,7 +58,6 @@ class AdminController extends Controller
             ->setBindings([$companyID, 'Pending'])
             ->limit(5)
             ->get();
-
         // Get attendance trends for the last 7 days for the company
         $attendanceTrends = AttendanceRecord::select(DB::raw('DATE(workDay) as date'), DB::raw('COUNT(DISTINCT employeeID) as present_count'))
             ->whereIn('employeeID', function ($query) use ($companyID) {
@@ -87,10 +86,7 @@ class AdminController extends Controller
             'recentLeaveRequests',
             'attendanceTrends',
             'departmentDistribution',
-            'totalPayroll',
-            'recentLeaveRequests',
-            'attendanceTrends',
-            'departmentDistribution'
+            'companyName'
         ));
     }
 }
