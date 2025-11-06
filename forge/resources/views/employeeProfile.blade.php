@@ -6,8 +6,10 @@
     </head>
 
     <body>
-        <div class="profile-box">
-            <h1>help</h1>
-        </div>    
+   
+    <p>Name: {{ $employee->firstName }} {{ $employee->lastName }}</p>
+    <p>Position: {{ $employee->position }}</p>
+    <p>Base Salary: ${{ $employee->formattedSalary }}</p>
+    <p>Hourly Rate: ${{ $employee->formattedRate }}</p>
     </body>
 </html>

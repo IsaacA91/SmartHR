@@ -2,18 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Admin;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Company;
+use Illuminate\Database\Seeder;
 
 class AdminSeeder extends Seeder
 {
     public function run()
     {
+        // Create a test admin
         Admin::create([
-            'name' => 'Admin',
-            'email' => 'admin@smarthr.com',
-            'password' => Hash::make('password'),
+            'adminID' => 'A001',
+            'firstName' => 'Test',
+            'lastName' => 'Admin',
+            'companyID' => 'CC01',
+            'password' => 'password123'  // Will be automatically hashed by the model
         ]);
     }
 }

@@ -8,33 +8,25 @@
         :root {
             --primary-blue: #4849E8;
             --light-blue: #ABC4FF;
-            --neon-yellow: #DDF344;
-            --white: #F5F9FF;
-            --card-shadow: 0 8px 24px rgba(72, 73, 232, 0.15);
+            --accent-yellow: #DDF344;
+            --bg-white: #F5F9FF;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-blue);
-            min-height: 100vh;
+            background: var(--primary-blue);
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
             background-image: radial-gradient(circle at 50% 50%, rgba(171, 196, 255, 0.1) 0%, rgba(72, 73, 232, 0.2) 100%);
         }
-
+        
         .login-card {
-            background-color: var(--white);
-            border-radius: 24px;
-            padding: 3rem;
-            box-shadow: var(--card-shadow);
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
             position: relative;
@@ -152,6 +144,36 @@
             color: var(--primary-blue);
             opacity: 0.7;
             font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--light-blue);
+            border-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .form-control:focus {
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 0.25rem rgba(72, 73, 232, 0.25);
+        }
+
+        .alert-danger {
+            background-color: var(--light-blue);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .text-muted {
+            color: var(--light-blue) !important;
+        }
+
+        hr {
+            border-color: var(--light-blue);
         }
     </style>
 </head>
