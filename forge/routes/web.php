@@ -9,10 +9,8 @@ use App\Http\Controllers\Employee\LeaveRequestController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
-use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Employee;
-use App\Http\Controllers\EmployeeController;
 
 
 // Root route - redirect to employee login
