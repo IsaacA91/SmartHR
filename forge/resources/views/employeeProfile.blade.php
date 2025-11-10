@@ -11,8 +11,8 @@
       </div>
       <div class="right-profile">
         <h1>{{$employee->firstName}} {{$employee->lastName}}</h1>
-        <h3>Company | {{$employee->company}}</h3>
-        <h2>Department Position | {{$employee->department}} {{$employee->position}}</h2>
+       
+        <h2>Department Position | {{$employee->departmentID}} {{$employee->position}}</h2>
         <hr>
         <h3>Contact Information</h3>
         <h2>Email | {{$employee->email}}</h2>
