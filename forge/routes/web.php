@@ -10,6 +10,9 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Employee;
+use App\Http\Controllers\EmployeeController;
+
 
 Route::prefix('employee')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('employee.login');
@@ -76,3 +79,18 @@ Route::prefix('admin')->group(function () {
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
     });
 });
+
+
+
+// Creates employee
+Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ]);
+Route::post('/test', [EmployeeController::class, 'employeeForm' ]);
+
+//signinPage
+Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
+Route::post('/employeeProfile', [EmployeeController::class, 'login'])->name('employee.login');
+Route::get('/employeeProfile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
+
+//Edit employee
+Route::get('/editEmployee', [EmployeeController::class, 'viewEditEmployee']);
+Route::post('/editEmployee', [EmployeeController::class, 'editEmployee']);

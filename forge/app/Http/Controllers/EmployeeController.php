@@ -84,10 +84,11 @@ class EmployeeController extends Controller
             return redirect()->route('employee.profile');
         } else {
             return back()->withErrors(['Invalid username or password']);
-        }
-    }
+        }     
 
-    public function employeeProfile()
+} 
+
+public function employeeProfile()
     {
         $employee = session('employee');
         if (!$employee) {
