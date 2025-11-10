@@ -24,9 +24,9 @@
                 <br>
             password:<input type='text' name='password'> </input>
                 <br>  
-            Base Salery:<input type='text' name='baseSalary '> </input>
+            Base Salary:<input type='text' name='baseSalary'> </input>
             <br>
-            rate:<input type='text' name='rate'>
+            Rate:<input type='text' name='rate' step="0.01"> </input>
 
         <button type='submit'>Create Employee</button>
 <!-- employeeID, companyID, position, departmentID, firstName, lastName, phone, email, username, password, baseSalary, rate -->
