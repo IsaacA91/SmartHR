@@ -91,7 +91,7 @@ class EmployeeController extends Controller
     {
         $employee = session('employee');
         if (!$employee) {
-            return redirect()->route('signinPage');
+            return redirect()->route('employee.login');
         }
 
         // Format the salary and rate for display

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AttendanceRecord;
 use App\Models\Employee;
 use App\Models\LeaveRequest;
+use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,5 +89,31 @@ class AdminController extends Controller
             'departmentDistribution',
             'companyName'
         ));
+    }
+    public function showEmployees()
+    {
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $employees = Employee::with('department')
+            ->where('companyID', $companyID)
+            ->orderBy('lastName')
+            ->paginate(10);
+
+        return view('employeeList', compact('employees'));
+    }
+    public function showEditForm($id)
+    {
+        $employee = Employee::with('department')->findOrFail($id);
+        $departments = Department::all();
+        
+        return view('editEmployee',compact('employee','departments'));
+    }
+    public function updateEmployee(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+        $employee->update($request->only([
+            'firstName', 'lastName', 'email', 'phone', 'position', 'departmentID'
+        ]));
+
+        return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
     }
 }

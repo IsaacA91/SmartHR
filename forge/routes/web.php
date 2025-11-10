@@ -19,16 +19,16 @@ Route::get('/', function () {
 });
 
 Route::prefix('employee')->group(function () {
-    Route::get('/login', [EmployeeLoginController::class, 'showLoginForm'])->name('employee.login');
-    Route::post('/login', [EmployeeLoginController::class, 'login']);
-    Route::post('/logout', [EmployeeLoginController::class, 'logout'])->name('employee.logout');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('employee.login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('employee.logout');
 });
 
 Route::middleware(['auth:employee'])->group(function () {
     Route::get('/', function () {
         return redirect()->route('attendance.dashboard');
     });
-
+    
     Route::get('/attendance', [AttendanceController::class, 'showDashboard'])->name('attendance.dashboard');
     Route::post('/attendance/clock', [AttendanceController::class, 'clockAction'])->name('attendance.clock');
     Route::get('/attendance/history', [AttendanceController::class, 'showHistory'])->name('attendance.history');
@@ -51,6 +51,7 @@ Route::middleware(['auth:employee'])->group(function () {
         Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('leave-requests.index');
         Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('leave-requests.update-status');
     });
+
 });
 
 // Creates employee
@@ -82,9 +83,7 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('/employeeProfile', function (){
-    return view('employeeProfile');
-});
+Route::get('/employeeProfile', [EmployeeController::class,'employeeProfile']);
 
 // Admin routes
 Route::prefix('admin')->group(function () {
@@ -100,18 +99,11 @@ Route::prefix('admin')->group(function () {
         Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         });
+        Route::get('/employeeList',[AdminController::class,'showEmployees'])->name('admin.employeeList');
+        Route::get('/employee/{id}/edit', [AdminController::class, 'showEditForm'])->name('admin.editForm');
+        Route::put('/employee/{id}', [AdminController::class, 'updateEmployee'])->name('admin.employee.update');
     });
 });
-
-
-// Creates employee
-Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ]);
-Route::post('/test', [EmployeeController::class, 'employeeForm' ]);
-
-//signinPage
-Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
-Route::post('/employeeProfile', [EmployeeController::class, 'login'])->name('employee.login');
-Route::get('/employeeProfile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
 
 //Edit employee
 Route::get('/editEmployee', [EmployeeController::class, 'viewEditEmployee']);

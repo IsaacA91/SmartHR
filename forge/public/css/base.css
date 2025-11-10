@@ -34,7 +34,6 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -70,7 +69,6 @@ footer{
     width: 100%;
     color: var(--blue-white);
     background: var(--blurple);
-    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;

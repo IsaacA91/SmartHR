@@ -140,7 +140,20 @@
             color: #6b7280;
             font-style: italic;
         }
-
+        button{
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            background-color:white;
+        }
+        button:hover{
+            background-Color:var(--primary-blue);
+            color:white;
+            border-color: var(--primary-blue);
+        }
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -167,10 +180,12 @@
         <h1 style='border-bottom:5px solid var(--primary-blue)'>{{$companyName}}</h1>
         <!-- Stats Cards -->
         <div class="stats-grid">
-            <div class="stats-card">
+            <form class="stats-card" method='get' action='{{ route('admin.employeeList') }}'>
+                @csrf
                 <h3>Total Employees</h3>
                 <div class="stats-number">{{ $totalEmployees }}</div>
-            </div>
+                <button> View ALL </button>
+            </form>
             <div class="stats-card">
                 <h3>Present Today</h3>
                 <div class="stats-number">{{ $presentToday }}</div>

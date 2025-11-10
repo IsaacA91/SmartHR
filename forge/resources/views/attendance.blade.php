@@ -109,7 +109,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                     <!-- Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2><i class="bi bi-clock-history"></i> Attendance System</h2>
-                        <a href="dashboard.php" class="btn btn-outline-secondary">
+                        <a href="employeeProfile.blade.php" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left"></i> Back to Dashboard
                         </a>
                     </div>
