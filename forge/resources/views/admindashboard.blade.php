@@ -154,6 +154,16 @@
             color:white;
             border-color: var(--primary-blue);
         }
+        select {
+            outline: 0;
+            width: 100%;
+            height: 100%;
+            color: var(--primary-blue);
+            border-color :var(--primary-blue);
+            cursor: pointer;
+            border: 3px solid;
+            border-radius: 7px;
+        }
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -244,8 +254,8 @@
                                     @method('PATCH')
                                     <select name="approval" onchange="this.form.submit()" class="form-select">
                                         <option value="Pending" {{ $request->approval == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="Approved" {{ $request->approval == 'Approved' ? 'selected' : '' }}>Approve</option>
-                                        <option value="Rejected" {{ $request->approval == 'Rejected' ? 'selected' : '' }}>Reject</option>
+                                        <option style='color:Green' value="Approved" {{ $request->approval == 'Approved' ? 'selected' : '' }}>Approve</option>
+                                        <option style='color:Red' value="Rejected" {{ $request->approval == 'Rejected' ? 'selected' : '' }}>Reject</option>
                                     </select>
                                 </form>
                             </td>
