@@ -17,11 +17,8 @@
             <img src="{{ asset('images/SHRLogo.png')}}" alt="SmartHR Logo">
         </div>
         <div class="navbar">
-            <a href="#">Home</a>
-            <a href="#">Attendance</a>
-            <a href="#">Vacation</a>
-            <a href="#">Payroll</a>
-            <a href="#">Logout</a>
+            <a href="{{route('admin.dashboardMain')}}">Home</a>
+            <a href="{{route('admin.login')}}">Logout</a>
         </div>
     </header>
     <main>

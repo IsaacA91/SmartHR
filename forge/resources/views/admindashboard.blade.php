@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminHeader')
 
 @section('title', 'Dashboard')
 
@@ -176,6 +176,11 @@
 </head>
 
 <body>
+    @if (session('success'))
+        <div style='color:green;'>
+            <h2 style='text-align:center;'>{{session('success')}}</h2>
+        </div>
+    @endif
     <div class="container">
         <h1 style='border-bottom:5px solid var(--primary-blue)'>{{$companyName}}</h1>
         <!-- Stats Cards -->
@@ -305,7 +310,7 @@
                 datasets: [{
                     data: departmentData.map(item => item.count),
                     backgroundColor: [
-                        '#2563eb',
+                        '#2556ebff',
                         '#7c3aed',
                         '#db2777',
                         '#dc2626',

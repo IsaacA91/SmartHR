@@ -201,6 +201,7 @@
         </form>
         <hr>
         <p class="test-account">Test Account: asmith / pass123</p>
+        <a href='/admin/login'>Admin Login</a>
     </div>
 </body>
 </html>

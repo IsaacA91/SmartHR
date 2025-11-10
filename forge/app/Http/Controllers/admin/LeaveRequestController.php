@@ -38,6 +38,6 @@ class LeaveRequestController extends Controller
             'admin_remarks' => $request->admin_remarks
         ]);
 
-        return redirect()->back()->with('success', 'Leave request has been ' . $request->status);
+        return redirect()->back()->with('success', 'Leave request has been ' . $request->approval);
     }
 }

@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {  // this check if the form was submi
         </form>
         <hr>
         <p class="text-center text-muted">Test Account: asmith / pass123</p>
+        <a href='/admin/login'>Admin Login</a>
     </div>
 </body>
 </html>
