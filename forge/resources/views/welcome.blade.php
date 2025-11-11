@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
+    <meta charset="UTF-8">
+    <title>Smart HR | Home</title>
         <style>
     body {
         margin: 0;
@@ -157,28 +159,94 @@
         text-align: center;
         padding: 20px 0;
         margin-top: 40px;
-        font-size: 0.9rem;
+        font-size: 0.9rem;     
     }
+
+    .reviews {
+  background-color: #F5F9FF;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.reviews h2 {
+  font-size: 2em;
+  color: #4849E8;
+}
+
+.reviews h3 {
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.revCards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.review {
+  background: white;
+  border-radius: 12px;
+  padding: 30px 20px;
+  width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.review:hover {
+  transform: translateY(-5px);
+}
+
+.review img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ABC4FF;
+  margin-bottom: 15px;
+}
+
+.review h3 {
+  color: #4849E8;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.review p {
+  color: #333;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .reviewCards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
 </style>
 </head>
 <html>
     <body>
 
 <header>
+
     <h1>Welcome to Smart HR</h1>
 </header>
 
 <section class="hero">
     <div class="hero-text">
-        <h1>Put workforce understanding to work</h1>
-        <p>The workforce operating platform that empowers the front line and connects the front office with technology and insights to solve any challenge. In any moment. In every industry.</p>
+        <h1>Use SmartHr to manage work</h1>
+        <p>A workface operating system that will make work life feasible, understandable and better. </p>
         <button><a href="signinPage">Get Started</a></button>
     </div>
 
     <div class="hero-video">
-        <video controls muted poster="thumbnail.jpg">
-            <source src="intro.mp4" type="video/mp4">
-            Sorry, your browser doesn’t support embedded videos.
+        <video autoplay muted loop playsinline poster="{{ asset('images/thumbnail.jpg') }}">
+           <source src="{{ asset('videos/Hrvideo.mp4') }}" type="video/mp4">
+           
         </video>
     </div>
 </section>
@@ -216,15 +284,21 @@
     <h3>See what people are saying about Smart HR.</h3>
     <div class='revCards'> 
         <div class='review'>
-            <p> "Fully optimized our company" -Jeff Bezos</p>
+            <img src="{{ asset('pictures/review1.webp') }}" alt="Jeff Bezos">
+            <h3>Jeff Bezos</h3>
+            <p> "Fully optimized our company"</p>
         </div>
-        <br>
+
          <div class='review'>
-            <p> "Cut costs on vacation for employees" -Mark Zuckerberg</p>
+             <img src="{{ asset('pictures/images.jpg') }}" alt=" Mark Zuckerberg ">
+            <h3> Mark Zuckerberg</h3>
+            <p> "Cut costs on vacation for employees" </p>
         </div>
-        <br>
-         <div class='review'>
-            <p> "Optimized time for paying employees" -Larry Fink</p>
+
+        <div class='review'>
+             <img src="{{ asset('pictures/LarryFink.jpg') }}" alt=" Mark Zuckerberg ">
+            <h3> Mark Zuckerberg</h3>
+            <p> "Cut costs on vacation for employees" </p>
         </div>
     </div>
 </section>
