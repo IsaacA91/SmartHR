@@ -116,4 +116,26 @@ class AdminController extends Controller
 
         return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
     }
+     public function showPresentEmployees()
+    {
+        $today = Carbon::today();
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $presentToday = AttendanceRecord::whereDate('workDay', $today)
+            ->whereNotNull('timeIn')
+            ->whereNull('timeOut')
+            ->join('employee', 'attendancerecord.employeeID', '=', 'employee.employeeID')
+            ->join('department', 'employee.departmentID', '=', 'department.departmentID')
+            ->where('employee.companyID', $companyID)
+            ->select(
+                'attendancerecord.*',
+                'employee.firstName',
+                'employee.lastName',
+                'employee.position',
+                'department.departmentName'
+            )
+            ->orderBy('employee.employeeID')
+            ->paginate(10);
+
+        return view('presentList', compact('presentToday'));
+    }
 }

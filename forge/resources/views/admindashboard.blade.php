@@ -195,16 +195,17 @@
         <h1 style='border-bottom:5px solid var(--primary-blue)'>{{$companyName}}</h1>
         <!-- Stats Cards -->
         <div class="stats-grid">
-            <form class="stats-card" method='get' action='{{ route('admin.employeeList') }}'>
+            <form class="stats-card" method='get' action="{{ route('admin.employeeList') }}">
                 @csrf
                 <h3>Total Employees</h3>
                 <div class="stats-number">{{ $totalEmployees }}</div>
                 <button> View ALL </button>
             </form>
-            <div class="stats-card">
+            <form class="stats-card" method='get' action="{{route('admin.presentList')}}">
                 <h3>Present Today</h3>
                 <div class="stats-number">{{ $presentToday }}</div>
-            </div>
+                <button> View ALL </button>
+            </form>
             <div class="stats-card">
                 <h3>Absent Today</h3>
                 <div class="stats-number">{{ $absentToday }}</div>
