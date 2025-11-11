@@ -100,6 +100,57 @@
         color: #333;
     }
 
+    .developers-section {
+  text-align: center;
+  background-color: #F5F9FF;
+  padding: 60px 20px;
+}
+
+.developers-section h2 {
+  color: #4849E8;
+  font-size: 2em;
+  margin-bottom: 40px;
+}
+
+.devCards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.developer {
+  background: #ABC4FF;
+  border-radius: 20px;
+  padding: 20px;
+  width: 220px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.developer:hover {
+  transform: translateY(-8px);
+}
+
+.developer img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #DDF344;
+  margin-bottom: 15px;
+}
+
+.developer h3 {
+  color: #4849E8;
+  margin-bottom: 5px;
+}
+
+.developer p {
+  color: #ffffff;
+  font-weight: bold;
+}
+
     footer {
         background-color: #4849E8;
         color: white;
@@ -135,17 +186,47 @@
 <section class="devs">
     <h2>Made with hard work by our developers</h2>
     <p>Our team poured their dedication into building a powerful and user-friendly HR platform designed to empower organizations worldwide.</p>
+    <div class='devCards'>
     <div class="developer">
      <img src="{{ asset('pictures/Evin.webp') }}" alt="Evin" width="200">
       <h3>Evin Camacho</h3>
       <p>Programmer</p>
     </div>
+    <div class="developer">
+     <img src="{{ asset('pictures/Evin.webp') }}" alt="Evin" width="200">
+      <h3>Evin Camacho</h3>
+      <p>Programmer</p>
+    </div>
+    <div class="developer">
+     <img src="{{ asset('pictures/Evin.webp') }}" alt="Evin" width="200">
+      <h3>Evin Camacho</h3>
+      <p>Programmer</p>
+    </div>
+    <div class="developer">
+     <img src="{{ asset('pictures/Evin.webp') }}" alt="Evin" width="200">
+      <h3>Evin Camacho</h3>
+      <p>Programmer</p>
+    </div>
+</div>
 
 </section>
 
 <section>
     <h2>Reviews</h2>
-    <p>See what people are saying about Smart HR.</p>
+    <h3>See what people are saying about Smart HR.</h3>
+    <div class='revCards'> 
+        <div class='review'>
+            <p> "Fully optimized our company" -Jeff Bezos</p>
+        </div>
+        <br>
+         <div class='review'>
+            <p> "Cut costs on vacation for employees" -Mark Zuckerberg</p>
+        </div>
+        <br>
+         <div class='review'>
+            <p> "Optimized time for paying employees" -Larry Fink</p>
+        </div>
+    </div>
 </section>
 
 <footer>
