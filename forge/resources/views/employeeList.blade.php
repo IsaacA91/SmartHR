@@ -139,6 +139,7 @@
                     <th>Phone</th>
                     <th>Department</th>
                     <th>Position</th>
+                    <th>Salary</th>
                     <th>Joined On</th>
                 </tr>
             </thead>
@@ -152,6 +153,7 @@
                         <td>{{ $employee->phone }}</td>
                         <td>{{ $employee->department->departmentName ?? '—' }}</td>
                         <td>{{ $employee->position ?? '—' }}</td>
+                        <td>{{ $employee->baseSalary }}</td>
                         <td>{{ \Carbon\Carbon::parse($employee->created_at)->format('M d, Y') }}</td>
                         <td><a href='{{ route('admin.editForm' , $employee->employeeID) }}'><button>Edit Employee Details</button></a></td>
                     </tr>
