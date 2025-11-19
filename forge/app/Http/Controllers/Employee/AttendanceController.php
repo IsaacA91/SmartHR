@@ -1,0 +1,209 @@
+<?php
+
+namespace App\Http\Controllers\Employee;
+
+use App\Http\Controllers\Controller;
+use App\Models\AttendanceRecord;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AttendanceController extends Controller
+{
+    private function generateRecordID()
+    {
+        $result = \DB::select("
+            SELECT MAX(CAST(SUBSTRING(recordID, 2) AS UNSIGNED)) as max_id 
+            FROM attendancerecord 
+            WHERE recordID REGEXP '^R[0-9]+\$'
+        ");
+
+        $maxId = $result[0]->max_id;
+        $newNumber = $maxId ? $maxId + 1 : 1;
+
+        $newId = 'R' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+
+        while (AttendanceRecord::where('recordID', $newId)->exists()) {
+            $newNumber++;
+            $newId = 'R' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        }
+
+        return $newId;
+    }
+
+    public function showHistory(Request $request)
+    {
+        $employeeID = Auth::guard('employee')->user()->employeeID;
+        $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate = $request->get('end_date', Carbon::now()->toDateString());
+
+        $records = AttendanceRecord::where('employeeID', $employeeID)
+            ->whereBetween('workDay', [$startDate, $endDate])
+            ->orderBy('workDay', 'desc')
+            ->orderBy('timeIn', 'desc')
+            ->paginate(15);
+
+        $stats = AttendanceRecord::where('employeeID', $employeeID)
+            ->whereBetween('workDay', [$startDate, $endDate])
+            ->selectRaw('COUNT(DISTINCT workDay) as total_days, SUM(hoursWorked) as total_hours, AVG(hoursWorked) as avg_hours')
+            ->first();
+
+        return view('attendance.history', compact('records', 'stats'));
+    }
+
+    public function showDashboard()
+    {
+        $employee = Auth::guard('employee')->user();
+        $employeeID = $employee->employeeID;
+        $today = Carbon::today()->toDateString();
+
+        // Prefer an open record (no timeOut) for today's clock status; otherwise use the latest record
+        $latestRecord = AttendanceRecord::where('employeeID', $employeeID)
+            ->where('workDay', $today)
+            ->whereNull('timeOut')
+            ->orderBy('recordID', 'desc')
+            ->first();
+
+        if (!$latestRecord) {
+            $latestRecord = AttendanceRecord::where('employeeID', $employeeID)
+                ->where('workDay', $today)
+                ->orderBy('recordID', 'desc')
+                ->first();
+        }
+
+        // Get monthly stats
+        $month_start = Carbon::now()->startOfMonth()->toDateString();
+        $month_end = Carbon::now()->endOfMonth()->toDateString();
+
+        $stats = AttendanceRecord::where('employeeID', $employeeID)
+            ->whereBetween('workDay', [$month_start, $month_end])
+            ->selectRaw('COUNT(DISTINCT workDay) as total_days, SUM(hoursWorked) as total_hours, AVG(hoursWorked) as avg_hours')
+            ->first();
+
+        // Today's sessions (all records for today) to show multiple in/out pairs
+        $todayRecords = AttendanceRecord::where('employeeID', $employeeID)
+            ->where('workDay', $today)
+            ->orderBy('recordID', 'desc')
+            ->get();
+
+        return view('attendance.dashboard', compact('latestRecord', 'employee', 'employeeID', 'stats', 'todayRecords'));
+    }
+
+    public function clockAction(Request $request)
+    {
+        $employee = Auth::guard('employee')->user();
+        if (!$employee) {
+            return redirect()->route('employee.login')->with('error', 'Please login first.');
+        }
+
+        $employeeID = $employee->employeeID;
+        $today = Carbon::today()->toDateString();
+
+        // Find the most recent open record for today (if any)
+        $openRecord = AttendanceRecord::where('employeeID', $employeeID)
+            ->where('workDay', $today)
+            ->whereNull('timeOut')
+            ->orderBy('recordID', 'desc')
+            ->first();
+
+        // CLOCK IN: allow new clock-in if there is no open record for today (so you can clock in/out multiple times per day,
+        // each pair will be a separate record; stats use DISTINCT workDay so total days won't increase for same day)
+        if ($request->input('action') === 'clock_in') {
+            if ($openRecord) {
+                return redirect()->back()->with('error', 'You are already clocked in. Please clock out first.');
+            }
+
+            try {
+                $success = \DB::transaction(function () use ($employeeID, $today) {
+                    $recordID = $this->generateRecordID();
+
+                    // Double-check inside transaction that ID is unique
+                    if (AttendanceRecord::where('recordID', $recordID)->exists()) {
+                        throw new \Exception('Failed to generate unique record ID. Please try again.');
+                    }
+
+                    AttendanceRecord::create([
+                        'recordID' => $recordID,
+                        'employeeID' => $employeeID,
+                        'workDay' => $today,
+                        'timeIn' => Carbon::now()->toTimeString(),
+                    ]);
+
+                    return true;
+                });
+
+                return redirect()->back()->with('success', 'Clocked in successfully!');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Error clocking in: ' . $e->getMessage());
+            }
+        }
+
+        // CLOCK OUT: close the most recent open record for today
+        if ($request->input('action') === 'clock_out') {
+            if (!$openRecord) {
+                return redirect()->back()->with('error', 'No open clock-in found for today.');
+            }
+
+            try {
+                $arrivalTime = Carbon::parse($openRecord->timeIn);
+                $departureTime = Carbon::now();
+                $totalHours = $departureTime->diffInMinutes($arrivalTime) / 60;
+
+                $openRecord->update([
+                    'timeOut' => $departureTime->toTimeString(),
+                    'hoursWorked' => round($totalHours, 1),
+                ]);
+
+                return redirect()->back()->with('success', 'Clocked out successfully!');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Error clocking out: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('error', 'Invalid clock action.');
+    }
+
+    public function exportAttendance(Request $request)
+    {
+        $employeeID = Auth::guard('employee')->user()->employeeID;
+        $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate = $request->get('end_date', Carbon::now()->toDateString());
+
+        $records = AttendanceRecord::where('employeeID', $employeeID)
+            ->whereBetween('workDay', [$startDate, $endDate])
+            ->orderBy('workDay', 'desc')
+            ->orderBy('timeIn', 'desc')
+            ->get();
+
+        $headers = array(
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=Mr_how_are_you_doing.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        );
+
+        $columns = array('Date', 'Day', 'Clock In', 'Clock Out', 'Hours Worked', 'Status');
+
+        $callback = function () use ($records, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($records as $record) {
+                $workDay = Carbon::parse($record->workDay);
+                $row = array(
+                    $workDay->format('M d, Y'),
+                    $workDay->format('l'),
+                    Carbon::parse($record->timeIn)->format('h:i A'),
+                    $record->timeOut ? Carbon::parse($record->timeOut)->format('h:i A') : 'Still Clocked In',
+                    $record->hoursWorked ? number_format($record->hoursWorked, 1) . ' hrs' : '-',
+                    $record->hoursWorked >= 8 ? 'Present' : ($record->hoursWorked > 0 ? 'Half Day' : 'In Progress')
+                );
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+}
