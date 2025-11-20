@@ -11,18 +11,22 @@ use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('employee')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('employee.login');
+// Main login page
+Route::get('/', [EmployeeController::class, 'signinPage'])->name('signinPage');
+Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
 
-    Route::post('/login', [LoginController::class, 'login']);
+// Employee login routes
+Route::post('/employee/login', [EmployeeController::class, 'login'])->name('employee.login.submit');
 
-    Route::post('/logout', [LoginController::class, 'logout'])->name('employee.logout');
-});
+// Employee login routes
+Route::post('/employee/login', [EmployeeController::class, 'login'])->name('employee.login.submit');
 
+// Employee authenticated routes
 Route::middleware(['auth:employee'])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('attendance.dashboard');
-    });
+    Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
+    Route::get('/profile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
+    
+    Route::post('/logout', [LoginController::class, 'logout'])->name('employee.logout');
 
     Route::get('/attendance', [AttendanceController::class, 'showDashboard'])->name('attendance.dashboard');
     Route::post('/attendance/clock', [AttendanceController::class, 'clockAction'])->name('attendance.clock');
@@ -49,13 +53,8 @@ Route::middleware(['auth:employee'])->group(function () {
 });
 
 // Creates employee
-Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage']);
-Route::post('/test', [EmployeeController::class, 'employeeForm']);
-
-// signinPage
-Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
-Route::post('/employeeProfile', [EmployeeController::class, 'login'])->name('employee.login');
-Route::get('/employeeProfile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
+Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage'])->name('employee.create.form');
+Route::post('/test', [EmployeeController::class, 'employeeForm'])->name('employee.create.submit');
 
 Route::prefix('admin')->group(function () {
     // Admin auth routes
@@ -75,4 +74,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
     });
+
+    // Edit employee
+    Route::get('/editEmployee', [EmployeeController::class, 'viewEditEmployee']);
+    Route::post('/editEmployee', [EmployeeController::class, 'editEmployee']);
 });

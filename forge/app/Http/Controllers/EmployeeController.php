@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -68,36 +69,50 @@ class EmployeeController extends Controller
         return view('signinPage');
     }
 
-    public function login(REQUEST $request)
+    public function login(Request $request)
     {
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
+        // Get employee by username
         $employee = DB::table('employee')
-            ->where('username', $username)
-            ->where('password', $password)
+            ->where('username', $request->username)
             ->first();
 
-        if ($employee) {
-            // Store user info in session
-            session(['employee' => $employee]);
-            return redirect()->route('employee.profile');
-        } else {
-            return back()->withErrors(['Invalid username or password']);
+        // Check if employee exists and password matches
+        if ($employee && Hash::check($request->password, $employee->password)) {
+            // Use the employee guard for authentication
+            Auth::guard('employee')->loginUsingId($employee->employeeID);
+            
+            return redirect()->route('employee.dashboard');
         }
+
+        return back()
+            ->withInput($request->only('username'))
+            ->withErrors(['username' => 'Invalid username or password']);
     }
 
     public function employeeProfile()
     {
-        $employee = session('employee');
+        $employee = Auth::guard('employee')->user();
+        
         if (!$employee) {
             return redirect()->route('signinPage');
         }
 
-        // Format the salary and rate for display
-        $employee->formattedSalary = number_format($employee->baseSalary, 2);
-        $employee->formattedRate = number_format($employee->rate, 2);
-
         return view('employeeProfile', ['employee' => $employee]);
+    }
+
+    public function dashboard()
+    {
+        $employee = Auth::guard('employee')->user();
+        
+        if (!$employee) {
+            return redirect()->route('signinPage');
+        }
+
+        return view('eDashboard', ['employee' => $employee]);
     }
 }
