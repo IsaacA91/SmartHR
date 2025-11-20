@@ -127,7 +127,10 @@
 
 <div class="employee-table-container">
     <h2>Employee Directory</h2>
-
+            <form style='justify-self:center; margin-bottom:15px;' method='get' action="{{ route('admin.employee.form') }}">
+                @csrf
+                <button> Add Employee </button>
+            </form>
     @if ($employees->count())
         <table class="employee-table">
             <thead>

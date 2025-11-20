@@ -75,7 +75,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/presentList', [AdminController::class, 'showPresentEmployees'])->name('admin.presentList');
         Route::get('/employee/{id}/edit', [AdminController::class, 'showEditForm'])->name('admin.editForm');
         Route::put('/employee/{id}', [AdminController::class, 'updateEmployee'])->name('admin.employee.update');
-
+        Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ])->name('admin.employee.form');
+        Route::post('/employeeCreationForm', [EmployeeController::class, 'employeeForm' ])->name('admin.employee.create');
         // Leave Requests
         Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('admin.leave-requests.index');
         Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('admin.leave-requests.update-status');
