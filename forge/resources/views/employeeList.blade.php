@@ -127,6 +127,11 @@
 
 <div class="employee-table-container">
     <h2>Employee Directory</h2>
+    @if (session('success'))
+        <div style='color:green;'>
+            <h2 style='text-align:center;'>{{session('success')}}</h2>
+        </div>
+    @endif
             <form style='justify-self:center; margin-bottom:15px;' method='get' action="{{ route('admin.employee.form') }}">
                 @csrf
                 <button> Add Employee </button>
@@ -159,7 +164,10 @@
                         <td>{{ $employee->position ?? '—' }}</td>
                         <td>{{ $employee->baseSalary }}</td>
                         <td>{{ \Carbon\Carbon::parse($employee->created_at)->format('M d, Y') }}</td>
-                        <td><a href='{{ route('admin.editForm' , $employee->employeeID) }}'><button>Edit Employee Details</button></a></td>
+                        <td>
+                            <a href="{{ route('admin.editForm' , $employee->employeeID) }}"><button>Edit</button></a>
+                            <a href="{{route('admin.remove.employee', $employee->employeeID)}}"><button>Terminate</button></a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

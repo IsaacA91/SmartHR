@@ -107,6 +107,13 @@ class AdminController extends Controller
         
         return view('editEmployee',compact('employee','departments'));
     }
+    public function removeEmployee($id){
+        $employee = Employee::findOrFail($id);
+        if($employee){
+            $employee->delete();
+        }
+        return redirect()->route('admin.employeeList')->with('success',"$employee->firstName $employee->lastName Terminated.");
+    }
     public function updateEmployee(Request $request, $id)
     {
         $employee = Employee::findOrFail($id);
