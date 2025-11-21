@@ -69,7 +69,7 @@
                 <h1>Create Employee</h1>
             </div>
 
-            <form name="EvinCamacho" method="post" action="/test">
+            <form name="EvinCamacho" method="post" action="{{route('admin.employee.create')}}">
                 @csrf
 
                 <div class="form-row">

@@ -62,7 +62,7 @@ Route::prefix('admin')->group(function () {
     // Auth
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login']);
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::get('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     // Protected Admin Routes
     Route::middleware(['auth:admin'])->group(function () {

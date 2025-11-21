@@ -60,7 +60,7 @@ class EmployeeController extends Controller
         $employee = DB::table('employee')->where('employeeID', $request->employeeID)->first();
 
         // Return to a success page with the employee data
-        return redirect()->route('employee.profile')->with('employee', $employee);
+        return redirect()->route('admin.dashboard');
     }
 
     public function signinPage()

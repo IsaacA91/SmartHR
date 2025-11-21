@@ -20,16 +20,13 @@ class Admin extends Authenticatable
         'companyID',
         'password',
     ];
-
+    public function getAuthIdentifierName()
+    {
+        return 'adminID';
+    }
     protected $hidden = [
         'password',
     ];
-
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
-
     public function company()
     {
         return $this->belongsTo(Company::class, 'companyID');

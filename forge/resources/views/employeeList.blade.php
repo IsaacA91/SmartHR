@@ -144,6 +144,7 @@
                     <th>Position</th>
                     <th>Salary</th>
                     <th>Joined On</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
