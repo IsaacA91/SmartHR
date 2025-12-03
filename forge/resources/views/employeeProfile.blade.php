@@ -247,17 +247,79 @@
             margin-bottom: 0.5rem;
         }
 
+        .action-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 10px 40px rgba(72, 73, 232, 0.15);
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(221, 243, 68, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-btn {
+            flex: 1;
+            position: relative;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--primary-blue), #6366f1);
+            color: white;
+            padding: 1.25rem 2rem;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(72, 73, 232, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(72, 73, 232, 0.4);
+            color: white;
+        }
+
+        .action-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+        }
+
         .buttons {
             display: flex;
             gap: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
             animation: fadeIn 1s ease-out 0.4s both;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .pushable {
@@ -369,8 +431,12 @@
                 font-size: 4rem;
             }
 
-            .buttons {
+            .action-bar {
                 flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-btn {
                 width: 100%;
             }
         }
@@ -389,45 +455,31 @@
             <a class="navbar-brand" href="{{ route('employee.dashboard') }}">
                 <i class="bi bi-building"></i> SmartHR
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 2px solid var(--primary-blue);">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto" style="gap: 0.5rem;">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.dashboard') }}">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('attendance.dashboard') }}">
-                            <i class="bi bi-clock-history"></i> Attendance
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('leave.index') }}">
-                            <i class="bi bi-calendar-x"></i> Leave
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.payroll.index') }}">
-                            <i class="bi bi-cash-coin"></i> Payroll
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('employee.logout') }}" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn-link nav-link">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
     <div class="profile-container">
+        <div class="action-bar">
+            <a href="{{ route('employee.dashboard') }}" class="action-btn">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{{ route('attendance.dashboard') }}" class="action-btn">
+                <i class="bi bi-calendar-check-fill"></i> Attendance
+            </a>
+            <a href="{{ route('leave.index') }}" class="action-btn">
+                <i class="bi bi-calendar-x-fill"></i> Vacation
+            </a>
+            <a href="{{ route('employee.payroll.index') }}" class="action-btn">
+                <i class="bi bi-cash-coin"></i> Payroll
+            </a>
+            <form method="POST" action="{{ route('employee.logout') }}" style="flex: 1; margin: 0;">
+                @csrf
+                <button type="submit" class="action-btn" style="width: 100%;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </div>
+
         <div class="profile-card">
             <div class="left-profile">
                 <div class="profile-picture">
@@ -451,33 +503,9 @@
                 <hr>
                 
                 <h3><i class="bi bi-cash-stack"></i> Employment Details</h3>
-                <h2><i class="bi bi-currency-dollar"></i> Base Salary: ₱{{ number_format($employee->baseSalary, 2) }}</h2>
-                <h2><i class="bi bi-clock-fill"></i> Hourly Rate: ₱{{ number_format($employee->rate, 2) }}</h2>
+                <h2><i class="bi bi-currency-dollar"></i> Base Salary: ${{ number_format($employee->baseSalary, 2) }}</h2>
+                <h2><i class="bi bi-clock-fill"></i> Hourly Rate: ${{ number_format($employee->rate, 2) }}</h2>
             </div>
-        </div>
-
-        <div class="buttons">
-            <a href="{{ route('attendance.dashboard') }}" class="pushable">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front">
-                    <i class="bi bi-calendar-check-fill"></i> Attendance
-                </span>
-            </a>
-            <a href="{{ route('leave.index') }}" class="pushable">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front">
-                    <i class="bi bi-calendar-x-fill"></i> Vacation
-                </span>
-            </a>
-            <a href="{{ route('employee.payroll.index') }}" class="pushable">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front">
-                    <i class="bi bi-cash-coin"></i> Payroll
-                </span>
-            </a>
         </div>
     </div>
 

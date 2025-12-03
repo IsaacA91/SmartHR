@@ -36,7 +36,7 @@ class EmployeeController extends Controller
             'departmentID' => 'required|max:4',
             'firstName' => 'required|max:25',
             'lastName' => 'required|max:25',
-            'phone' => 'required',
+            'phone' => 'required|unique:employee,phone',
             'email' => 'required|email|max:50|unique:employee,email',
             'username' => 'required|max:29|unique:employee,username',
             'password' => 'required',
@@ -68,11 +68,8 @@ class EmployeeController extends Controller
                 $rate
             ]);
 
-        // Get the inserted employee data
-        $employee = DB::table('employee')->where('employeeID', $request->employeeID)->first();
-
-        // Return to a success page with the employee data
-        return redirect()->route('employee.profile')->with('employee', $employee);
+        // Return to the employee list with success message
+        return redirect()->route('admin.employeeList')->with('success', 'Employee created successfully!');
     }
 
     public function signinPage()

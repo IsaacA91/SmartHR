@@ -237,6 +237,26 @@
                 border-color: rgba(72, 73, 232, 0.15);
             }
 
+            .error-text {
+                color: #dc3545;
+                font-size: 0.875rem;
+                font-weight: 600;
+                margin-top: 4px;
+                display: block;
+                animation: fadeIn 0.3s ease-in;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .actions {
                 padding: 0 40px 40px 40px;
                 display: flex;
@@ -368,80 +388,116 @@
                 <h1><i class="bi bi-person-plus-fill"></i> Create Employee</h1>
             </div>
 
-            <form name="EvinCamacho" method="post" action="/test">
+            <form name="EvinCamacho" method="post" action="{{ route('admin.employee.create') }}">
                 @csrf
 
                 <div class="form-grid">
                     <div class="form-field">
                         <label for="employeeID"><i class="bi bi-hash"></i> Employee ID</label>
                         <input id="employeeID" type="text" name="employeeID" value="{{ $nextEmployeeID }}" readonly />
+                        @error('employeeID')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="companyID"><i class="bi bi-building"></i> Company ID</label>
-                        <input id="companyID" type="text" name="companyID" />
+                        <input id="companyID" type="text" name="companyID" value="{{ old('companyID') }}" />
+                        @error('companyID')
+                            <span class="error-text">Company ID is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="position"><i class="bi bi-briefcase"></i> Position</label>
-                        <input id="position" type="text" name="position" />
+                        <input id="position" type="text" name="position" value="{{ old('position') }}" />
+                        @error('position')
+                            <span class="error-text">Position is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="departmentID"><i class="bi bi-diagram-3"></i> Department ID</label>
-                        <input id="departmentID" type="text" name="departmentID" />
+                        <input id="departmentID" type="text" name="departmentID" value="{{ old('departmentID') }}" />
+                        @error('departmentID')
+                            <span class="error-text">Department ID is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="firstName"><i class="bi bi-person"></i> First Name</label>
-                        <input id="firstName" type="text" name="firstName" />
+                        <input id="firstName" type="text" name="firstName" value="{{ old('firstName') }}" />
+                        @error('firstName')
+                            <span class="error-text">First Name is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="lastName"><i class="bi bi-person"></i> Last Name</label>
-                        <input id="lastName" type="text" name="lastName" />
+                        <input id="lastName" type="text" name="lastName" value="{{ old('lastName') }}" />
+                        @error('lastName')
+                            <span class="error-text">Last Name is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="phone"><i class="bi bi-telephone"></i> Phone</label>
-                        <input id="phone" type="text" name="phone" />
+                        <input id="phone" type="text" name="phone" value="{{ old('phone') }}" />
+                        @error('phone')
+                            <span class="error-text">Phone is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="email"><i class="bi bi-envelope"></i> Email</label>
-                        <input id="email" type="email" name="email" />
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" />
+                        @error('email')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="username"><i class="bi bi-person-badge"></i> User Name</label>
-                        <input id="username" type="text" name="username" />
+                        <input id="username" type="text" name="username" value="{{ old('username') }}" />
+                        @error('username')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="password"><i class="bi bi-lock"></i> Password</label>
                         <input id="password" type="password" name="password" />
+                        @error('password')
+                            <span class="error-text">Password is required</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="baseSalary"><i class="bi bi-cash"></i> Base Salary</label>
-                        <input id="baseSalary" type="text" name="baseSalary" />
+                        <input id="baseSalary" type="text" name="baseSalary" value="{{ old('baseSalary') }}" />
+                        @error('baseSalary')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-field">
                         <label for="rate"><i class="bi bi-percent"></i> Rate</label>
-                        <input id="rate" type="text" name="rate" />
+                        <input id="rate" type="text" name="rate" value="{{ old('rate') }}" />
+                        @error('rate')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
-            </form>
 
-            <div class="actions">
-                <a href="{{ route('admin.employeeList') }}" class="back-btn">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
-                <button type="submit" form="EvinCamacho">
-                    <i class="bi bi-check-circle"></i> Create Employee
-                </button>
-            </div>
+                <div class="actions">
+                    <a href="{{ route('admin.employeeList') }}" class="back-btn">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit">
+                        <i class="bi bi-check-circle"></i> Create Employee
+                    </button>
+                </div>
+            </form>
         </div>
     </body>
 </html>
