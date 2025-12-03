@@ -140,7 +140,6 @@
         <table class="employee-table">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Employee ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
@@ -155,7 +154,6 @@
             <tbody>
                 @foreach ($employees as $index => $employee)
                     <tr>
-                        <td>{{ $employees->firstItem() + $index }}</td>
                         <td>{{ $employee->employeeID }}</td>
                         <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
                         <td>{{ $employee->email }}</td>
