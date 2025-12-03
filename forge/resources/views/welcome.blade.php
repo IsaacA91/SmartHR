@@ -3,6 +3,7 @@
     <head>
     <meta charset="UTF-8">
     <title>Smart HR | Home</title>
+    
         <style>
     body {
         margin: 0;
@@ -225,7 +226,6 @@
   }
 }
 
-
 </style>
 </head>
 <html>
@@ -297,7 +297,7 @@
 
         <div class='review'>
              <img src="{{ asset('pictures/LarryFink.jpg') }}" alt=" Mark Zuckerberg ">
-            <h3> Mark Zuckerberg</h3>
+            <h3> Larry Fink</h3>
             <p> "Cut costs on vacation for employees" </p>
         </div>
     </div>

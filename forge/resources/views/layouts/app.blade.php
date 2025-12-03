@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Actor&family=Momo+Trust+Display&family=Patrick+Hand&family=Poltawski+Nowy:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('images/SHRLogo.png') }}">
     @stack('styles')
     <title>@yield('title', 'SmartHR')</title>
 </head>
