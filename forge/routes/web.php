@@ -79,6 +79,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/employeeCreationForm', [EmployeeController::class, 'employeeForm' ])->name('admin.employee.create');
         Route::get('/remove/employee/{id}',[AdminCOntroller::class,'removeEmployee'])->name('admin.remove.employee');
         // Leave Requests
+        Route::get('/leave-list',[AdminController::class,'leavePage'])->name('admin.leaveList');
         Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('admin.leave-requests.index');
         Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('admin.leave-requests.update-status');
 

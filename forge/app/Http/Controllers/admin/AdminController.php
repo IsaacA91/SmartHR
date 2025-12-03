@@ -145,4 +145,20 @@ class AdminController extends Controller
 
         return view('presentList', compact('presentToday'));
     }
+    public function leavePage()
+    {
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $leaveRequests = DB::table('leaverequests as l')
+            ->join(DB::raw('(SELECT employeeID, firstName, lastName FROM employee WHERE companyID COLLATE utf8mb4_unicode_ci = ?) as e'),
+                function ($join) {
+                    $join->on('l.employeeID', '=', DB::raw('e.employeeID COLLATE utf8mb4_unicode_ci'));
+                })
+            ->where('l.approval', '=', 'Pending')
+            ->orderBy('l.startDate', 'asc')
+            ->select('l.*', 'e.firstName', 'e.lastName')
+            ->setBindings([$companyID, 'Pending'])
+            ->get();
+
+        return view('leaveList', compact('leaveRequests'));
+    }
 }

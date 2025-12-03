@@ -19,6 +19,9 @@
         <div class="navbar">
             <a href="{{route('admin.dashboardMain')}}">Home</a>
             <a href="{{route('admin.logout')}}">Logout</a>
+            <a href="{{route('admin.employeeList')}}">Employees</a>
+            <a href="{{route('admin.presentList')}}">Present Employees</a>
+            <a href="{{route('admin.leaveList')}}">Leave Requests</a>
         </div>
     </header>
     <main>
