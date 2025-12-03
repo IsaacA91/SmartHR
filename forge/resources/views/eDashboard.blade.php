@@ -431,7 +431,7 @@ body {
 <div class="container dash">
     <div class="header-section">
         <h1 class="greeting">Welcome back, {{$employee->firstName}}!</h1>
-        <p class="subtitle">✨ Manage your work life in one beautiful place</p>
+        <p class="subtitle"> Manage your work life in one beautiful place</p>
     </div>
 
     <div class="profile-section reveal">

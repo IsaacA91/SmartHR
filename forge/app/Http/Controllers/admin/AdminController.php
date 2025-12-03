@@ -149,11 +149,13 @@ class AdminController extends Controller
         return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
     }
 
-    public function showPresentEmployees()
+    public function showPresentEmployees(Request $request)
     {
         $today = Carbon::today();
         $companyID = Auth::guard('admin')->user()->companyID;
-        $presentToday = AttendanceRecord::whereDate('workDay', $today)
+        $search = $request->input('search');
+
+        $query = AttendanceRecord::whereDate('workDay', $today)
             ->whereNotNull('timeIn')
             ->whereNull('timeOut')
             ->join('employee', 'attendancerecord.employeeID', '=', 'employee.employeeID')
@@ -164,10 +166,21 @@ class AdminController extends Controller
                 'employee.firstName',
                 'employee.lastName',
                 'employee.position',
+                'employee.employeeID as empID',
                 'department.departmentName'
-            )
-            ->orderBy('employee.employeeID')
-            ->paginate(10);
+            );
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('employee.firstName', 'LIKE', "%{$search}%")
+                  ->orWhere('employee.lastName', 'LIKE', "%{$search}%")
+                  ->orWhere('employee.employeeID', 'LIKE', "%{$search}%")
+                  ->orWhere('employee.position', 'LIKE', "%{$search}%")
+                  ->orWhere('department.departmentName', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $presentToday = $query->orderBy('employee.employeeID')->paginate(10)->withQueryString();
 
         return view('presentList', compact('presentToday'));
     }

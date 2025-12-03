@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Profile - SmartHR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
@@ -14,93 +13,238 @@
             --bg-white: #F5F9FF;
         }
         
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            background: var(--bg-white);
             min-height: 100vh;
             color: #333;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background shapes */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.3;
+            animation: float 22s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 450px;
+            height: 450px;
+            background: var(--light-blue);
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-blue);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 8s;
+        }
+
+        .shape3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent-yellow);
+            top: 40%;
+            right: 10%;
+            animation-delay: 16s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(40px, -40px) rotate(90deg); }
+            50% { transform: translate(-30px, 30px) rotate(180deg); }
+            75% { transform: translate(50px, 15px) rotate(270deg); }
         }
 
         .navbar {
-            background: white !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(72, 73, 232, 0.1);
+            padding: 1rem 0;
+            position: relative;
+            z-index: 100;
         }
 
         .navbar-brand {
             color: var(--primary-blue) !important;
-            font-weight: bold;
+            font-weight: 800;
             font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
 
         .nav-link {
             color: var(--primary-blue) !important;
-            font-weight: 500;
+            font-weight: 600;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .nav-link:hover {
-            color: var(--light-blue) !important;
+            background: rgba(72, 73, 232, 0.1);
+            transform: translateY(-2px);
         }
 
         .profile-container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 3rem auto;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         .profile-card {
-            background: white;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 32px;
             padding: 3rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(72, 73, 232, 0.15);
             display: flex;
             gap: 3rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(221, 243, 68, 0.05), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .left-profile {
             flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .profile-picture {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            background: var(--light-blue);
+            background: linear-gradient(135deg, var(--light-blue), rgba(171, 196, 255, 0.5));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
+            font-size: 5rem;
             color: var(--primary-blue);
-            border: 5px solid var(--primary-blue);
+            border: 6px solid white;
+            box-shadow: 0 10px 30px rgba(72, 73, 232, 0.2);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(72, 73, 232, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(72, 73, 232, 0.3); }
         }
 
         .right-profile {
             flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .right-profile h1 {
             color: var(--primary-blue);
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .right-profile h3 {
-            color: #666;
+            color: #475569;
             font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .right-profile h2 {
-            color: #555;
-            font-size: 1rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .right-profile hr {
-            border-top: 2px solid var(--light-blue);
-            margin: 1.5rem 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, var(--light-blue), transparent);
+            margin: 2rem 0;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: rgba(72, 73, 232, 0.1);
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
         .buttons {
@@ -108,6 +252,12 @@
             gap: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .pushable {
@@ -126,10 +276,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 12px;
-            background: hsl(0deg 0% 0% / 0.25);
+            border-radius: 16px;
+            background: rgba(72, 73, 232, 0.3);
             will-change: transform;
-            transform: translateY(2px);
+            transform: translateY(3px);
             transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
         }
 
@@ -139,28 +289,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 12px;
+            border-radius: 16px;
             background: linear-gradient(
                 to left,
-                hsl(240deg 80% 40%) 0%,
-                hsl(240deg 80% 50%) 8%,
-                hsl(240deg 80% 50%) 92%,
-                hsl(240deg 80% 40%) 100%
+                #3637b8 0%,
+                var(--primary-blue) 8%,
+                var(--primary-blue) 92%,
+                #3637b8 100%
             );
         }
 
         .front {
             display: block;
             position: relative;
-            padding: 18px 40px;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            padding: 20px 45px;
+            border-radius: 16px;
+            font-size: 1.15rem;
             color: white;
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #6366f1 100%);
             will-change: transform;
-            transform: translateY(-4px);
+            transform: translateY(-5px);
             transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
-            font-weight: 600;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .pushable:hover {
@@ -168,7 +321,7 @@
         }
 
         .pushable:hover .front {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
         }
 
@@ -178,7 +331,7 @@
         }
 
         .pushable:hover .shadow {
-            transform: translateY(4px);
+            transform: translateY(6px);
             transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
         }
 
@@ -187,30 +340,60 @@
             transition: transform 34ms;
         }
 
+        .btn-link {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
         @media (max-width: 768px) {
             .profile-card {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
+                padding: 2rem;
             }
 
             .right-profile h1 {
-                font-size: 2rem;
+                font-size: 2.25rem;
+            }
+
+            .right-profile h2,
+            .right-profile h3 {
+                justify-content: center;
+            }
+
+            .profile-picture {
+                width: 150px;
+                height: 150px;
+                font-size: 4rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
+    <!-- Animated background -->
+    <div class="bg-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid" style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
             <a class="navbar-brand" href="{{ route('employee.dashboard') }}">
                 <i class="bi bi-building"></i> SmartHR
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: 2px solid var(--primary-blue);">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto" style="gap: 0.5rem;">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('employee.dashboard') }}">
                             <i class="bi bi-speedometer2"></i> Dashboard
@@ -223,7 +406,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('leave.index') }}">
-                            <i class="bi bi-calendar-x"></i> Leave Requests
+                            <i class="bi bi-calendar-x"></i> Leave
                         </a>
                     </li>
                     <li class="nav-item">
@@ -234,7 +417,7 @@
                     <li class="nav-item">
                         <form method="POST" action="{{ route('employee.logout') }}" class="d-inline">
                             @csrf
-                            <button type="submit" class="btn btn-link nav-link">
+                            <button type="submit" class="btn-link nav-link">
                                 <i class="bi bi-box-arrow-right"></i> Logout
                             </button>
                         </form>
@@ -253,17 +436,23 @@
             </div>
             <div class="right-profile">
                 <h1>{{ $employee->firstName }} {{ $employee->lastName }}</h1>
-                <h3>Company ID: {{ $employee->companyID }}</h3>
-                <h2>{{ $employee->position }}</h2>
-                <h2>Department: {{ $employee->departmentID }}</h2>
+                <div class="info-badge">
+                    <i class="bi bi-building"></i> Company ID: {{ $employee->companyID }}
+                </div>
+                <h2><i class="bi bi-briefcase-fill"></i> {{ $employee->position }}</h2>
+                <h2><i class="bi bi-diagram-3-fill"></i> {{ $employee->department->departmentName ?? $employee->departmentID }}</h2>
+                
                 <hr>
-                <h3>Contact Information</h3>
+                
+                <h3><i class="bi bi-envelope-fill"></i> Contact Information</h3>
                 <h2><i class="bi bi-envelope"></i> {{ $employee->email }}</h2>
-                <h2><i class="bi bi-telephone"></i> {{ $employee->phone }}</h2>
+                <h2><i class="bi bi-telephone-fill"></i> {{ $employee->phone }}</h2>
+                
                 <hr>
-                <h3>Employment Details</h3>
-                <h2><i class="bi bi-cash"></i> Base Salary: ₱{{ number_format($employee->baseSalary, 2) }}</h2>
-                <h2><i class="bi bi-clock"></i> Hourly Rate: ₱{{ number_format($employee->rate, 2) }}</h2>
+                
+                <h3><i class="bi bi-cash-stack"></i> Employment Details</h3>
+                <h2><i class="bi bi-currency-dollar"></i> Base Salary: ₱{{ number_format($employee->baseSalary, 2) }}</h2>
+                <h2><i class="bi bi-clock-fill"></i> Hourly Rate: ₱{{ number_format($employee->rate, 2) }}</h2>
             </div>
         </div>
 
@@ -272,14 +461,14 @@
                 <span class="shadow"></span>
                 <span class="edge"></span>
                 <span class="front">
-                    <i class="bi bi-calendar-check"></i> Attendance
+                    <i class="bi bi-calendar-check-fill"></i> Attendance
                 </span>
             </a>
             <a href="{{ route('leave.index') }}" class="pushable">
                 <span class="shadow"></span>
                 <span class="edge"></span>
                 <span class="front">
-                    <i class="bi bi-calendar-x"></i> Vacation
+                    <i class="bi bi-calendar-x-fill"></i> Vacation
                 </span>
             </a>
             <a href="{{ route('employee.payroll.index') }}" class="pushable">
@@ -292,6 +481,18 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar collapse for Bootstrap
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            if (navbarToggler) {
+                navbarToggler.addEventListener('click', function() {
+                    navbarCollapse.classList.toggle('show');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
