@@ -12,22 +12,33 @@ class EmployeeController extends Controller
 {
     public function employeeFormPage(Request $request)
     {
-        return view('employeeCreation');
+        // Get the next available employee ID
+        $maxId = DB::table('employee')->orderBy('employeeID', 'desc')->value('employeeID');
+        $nextId = 'E001';
+        
+        if ($maxId) {
+            // Extract the number from the ID (e.g., E501 -> 501)
+            $number = intval(substr($maxId, 1));
+            $nextNumber = $number + 1;
+            $nextId = 'E' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        }
+        
+        return view('employeeCreation', ['nextEmployeeID' => $nextId]);
     }
 
     public function employeeForm(Request $request)
     {
         // Validate the request
         $validated = $request->validate([
-            'employeeID' => 'required|max:4',
+            'employeeID' => 'required|max:4|unique:employee,employeeID',
             'companyID' => 'required|max:4',
             'position' => 'required|max:25',
             'departmentID' => 'required|max:4',
             'firstName' => 'required|max:25',
             'lastName' => 'required|max:25',
             'phone' => 'required',
-            'email' => 'required|email|max:50',
-            'username' => 'required|max:29',
+            'email' => 'required|email|max:50|unique:employee,email',
+            'username' => 'required|max:29|unique:employee,username',
             'password' => 'required',
             'baseSalary' => 'required|numeric|between:0,999999.99',
             'rate' => 'required|numeric|between:0,999.99'

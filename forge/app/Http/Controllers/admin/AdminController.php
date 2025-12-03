@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRecord;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\LeaveRequest;
 use Carbon\Carbon;
@@ -17,7 +18,7 @@ class AdminController extends Controller
     {
         // Get admin's company ID
         $companyID = Auth::guard('admin')->user()->companyID;
-
+        $companyName = Auth::guard('admin')->user()->company->companyName;
         // Get total employees in the company using explicit collation
         $totalEmployees = Employee::whereRaw('companyID COLLATE utf8mb4_unicode_ci = ?', [$companyID])->count();
 
@@ -33,7 +34,7 @@ class AdminController extends Controller
             })
             ->whereNotNull('timeIn')
             ->whereNull('timeOut')
-                 ->count();
+            ->count();
 
         $absentToday = $totalEmployees - $presentToday;
 
@@ -58,7 +59,6 @@ class AdminController extends Controller
             ->setBindings([$companyID, 'Pending'])
             ->limit(5)
             ->get();
-
         // Get attendance trends for the last 7 days for the company
         $attendanceTrends = AttendanceRecord::select(DB::raw('DATE(workDay) as date'), DB::raw('COUNT(DISTINCT employeeID) as present_count'))
             ->whereIn('employeeID', function ($query) use ($companyID) {
@@ -87,10 +87,88 @@ class AdminController extends Controller
             'recentLeaveRequests',
             'attendanceTrends',
             'departmentDistribution',
-            'totalPayroll',
-            'recentLeaveRequests',
-            'attendanceTrends',
-            'departmentDistribution'
+            'companyName'
         ));
+    }
+
+    public function employeeList(Request $request)
+    {
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $search = $request->get('search');
+        
+        $employees = Employee::with('department')
+            ->where('companyID', $companyID)
+            ->when($search, function($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('firstName', 'LIKE', "%{$search}%")
+                      ->orWhere('lastName', 'LIKE', "%{$search}%")
+                      ->orWhere('email', 'LIKE', "%{$search}%")
+                      ->orWhere('employeeID', 'LIKE', "%{$search}%")
+                      ->orWhereHas('department', function($deptQuery) use ($search) {
+                          $deptQuery->where('departmentName', 'LIKE', "%{$search}%");
+                      });
+                });
+            })
+            ->orderBy('lastName');
+
+        // If AJAX request, return JSON for autocomplete
+        if ($request->ajax() || $request->get('ajax')) {
+            $results = $employees->limit(10)->get()->map(function($employee) {
+                return [
+                    'employeeID' => $employee->employeeID,
+                    'firstName' => $employee->firstName,
+                    'lastName' => $employee->lastName,
+                    'email' => $employee->email,
+                    'department' => $employee->department->departmentName ?? null
+                ];
+            });
+            return response()->json($results);
+        }
+
+        // Regular paginated view
+        $employees = $employees->paginate(10)->appends(['search' => $search]);
+
+        return view('employeeList', compact('employees'));
+    }
+
+    public function showEditForm($id)
+    {
+        $employee = Employee::with('department')->findOrFail($id);
+        $departments = Department::all();
+
+        return view('editEmployee', compact('employee', 'departments'));
+    }
+
+    public function updateEmployee(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+        $employee->update($request->only([
+            'firstName', 'lastName', 'email', 'phone', 'position', 'departmentID'
+        ]));
+
+        return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
+    }
+
+    public function showPresentEmployees()
+    {
+        $today = Carbon::today();
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $presentToday = AttendanceRecord::whereDate('workDay', $today)
+            ->whereNotNull('timeIn')
+            ->whereNull('timeOut')
+            ->join('employee', 'attendancerecord.employeeID', '=', 'employee.employeeID')
+            ->join('department', 'employee.departmentID', '=', 'department.departmentID')
+            ->where('employee.companyID', $companyID)
+            ->select(
+                'attendancerecord.*',
+                'employee.firstName',
+                'employee.lastName',
+                'employee.position',
+                'department.departmentName'
+            )
+            ->orderBy('employee.employeeID')
+            ->paginate(10);
+
+        return view('presentList', compact('presentToday'));
     }
 }

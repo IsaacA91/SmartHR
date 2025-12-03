@@ -179,7 +179,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('employee.login.submit') }}">
+                <form method="POST" action="{{ route('employee.profile.login') }}">
                     @csrf
                     <div class="form-group">
                         <label for="emp-username">

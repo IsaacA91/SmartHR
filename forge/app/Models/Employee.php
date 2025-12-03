@@ -32,6 +32,16 @@ class Employee extends Authenticatable
         'password',
     ];
 
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departmentID', 'departmentID');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'companyID', 'companyID');
+    }
+
     public function AttendanceRecords()
     {
         return $this->hasMany(AttendanceRecord::class, 'employeeID', 'employeeID');

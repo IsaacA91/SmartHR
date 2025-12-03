@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.adminHeader')
 
 @section('title', 'Dashboard')
 
@@ -140,7 +140,30 @@
             color: #6b7280;
             font-style: italic;
         }
-
+        button{
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            background-color:white;
+        }
+        button:hover{
+            background-Color:var(--primary-blue);
+            color:white;
+            border-color: var(--primary-blue);
+        }
+        select {
+            outline: 0;
+            width: 100%;
+            height: 100%;
+            color: var(--primary-blue);
+            border-color :var(--primary-blue);
+            cursor: pointer;
+            border: 3px solid;
+            border-radius: 7px;
+        }
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -163,18 +186,26 @@
 </head>
 
 <body>
+    @if (session('success'))
+        <div style='color:green;'>
+            <h2 style='text-align:center;'>{{session('success')}}</h2>
+        </div>
+    @endif
     <div class="container">
         <h1 style='border-bottom:5px solid var(--primary-blue)'>{{$companyName}}</h1>
         <!-- Stats Cards -->
         <div class="stats-grid">
-            <div class="stats-card">
+            <form class="stats-card" method='get' action="{{ route('admin.employeeList') }}">
+                @csrf
                 <h3>Total Employees</h3>
                 <div class="stats-number">{{ $totalEmployees }}</div>
-            </div>
-            <div class="stats-card">
+                <button> View ALL </button>
+            </form>
+            <form class="stats-card" method='get' action="{{route('admin.presentList')}}">
                 <h3>Present Today</h3>
                 <div class="stats-number">{{ $presentToday }}</div>
-            </div>
+                <button> View ALL </button>
+            </form>
             <div class="stats-card">
                 <h3>Absent Today</h3>
                 <div class="stats-number">{{ $absentToday }}</div>
@@ -224,8 +255,8 @@
                                     @method('PATCH')
                                     <select name="approval" onchange="this.form.submit()" class="form-select">
                                         <option value="Pending" {{ $request->approval == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="Approved" {{ $request->approval == 'Approved' ? 'selected' : '' }}>Approve</option>
-                                        <option value="Rejected" {{ $request->approval == 'Rejected' ? 'selected' : '' }}>Reject</option>
+                                        <option style='color:Green' value="Approved" {{ $request->approval == 'Approved' ? 'selected' : '' }}>Approve</option>
+                                        <option style='color:Red' value="Rejected" {{ $request->approval == 'Rejected' ? 'selected' : '' }}>Reject</option>
                                     </select>
                                 </form>
                             </td>
@@ -290,7 +321,7 @@
                 datasets: [{
                     data: departmentData.map(item => item.count),
                     backgroundColor: [
-                        '#2563eb',
+                        '#2556ebff',
                         '#7c3aed',
                         '#db2777',
                         '#dc2626',

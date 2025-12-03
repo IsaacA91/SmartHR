@@ -59,6 +59,8 @@
             .note { color: var(--muted); font-size: 0.9rem; }
             button { background: var(--lime); color: var(--deep-blue); border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
             button:hover { filter: brightness(.98); transform: translateY(-1px); }
+            .back-btn { background: var(--deep-blue); color: white; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; display: inline-block; }
+            .back-btn:hover { filter: brightness(.95); }
 
             @media (max-width:640px){ .form-row { flex-direction: column; align-items: stretch; } .form-row label { min-width: unset; } }
         </style>
@@ -74,7 +76,7 @@
 
                 <div class="form-row">
                     <label for="employeeID">Employee ID</label>
-                    <input id="employeeID" type="text" name="employeeID" />
+                    <input id="employeeID" type="text" name="employeeID" value="{{ $nextEmployeeID }}" readonly style="background-color: #f0f0f0; cursor: not-allowed;" />
                 </div>
 
                 <div class="form-row">
@@ -133,8 +135,11 @@
                 </div>
 
                 <div class="actions">
-                    <div class="note">Fields: employeeID, companyID, position, departmentID, firstName, lastName, phone, email, username, password, baseSalary, rate</div>
-                    <button type="submit">Create Employee</button>
+                    <a href="{{ route('admin.employeeList') }}" class="back-btn">← Back to List</a>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div class="note">Fields: employeeID, companyID, position, departmentID, firstName, lastName, phone, email, username, password, baseSalary, rate</div>
+                        <button type="submit">Create Employee</button>
+                    </div>
                 </div>
             </form>
         </div>
