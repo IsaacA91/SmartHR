@@ -15,14 +15,14 @@ class EmployeeController extends Controller
         // Get the next available employee ID
         $maxId = DB::table('employee')->orderBy('employeeID', 'desc')->value('employeeID');
         $nextId = 'E001';
-        
+
         if ($maxId) {
             // Extract the number from the ID (e.g., E501 -> 501)
             $number = intval(substr($maxId, 1));
             $nextNumber = $number + 1;
             $nextId = 'E' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         }
-        
+
         return view('employeeCreation', ['nextEmployeeID' => $nextId]);
     }
 
@@ -97,7 +97,7 @@ class EmployeeController extends Controller
             // Use the employee guard for authentication
             Auth::guard('employee')->loginUsingId($employee->employeeID);
             
-            return redirect()->route('employee.dashboard');
+            return redirect('/dashboard');
         }
 
         return back()
@@ -105,12 +105,10 @@ class EmployeeController extends Controller
             ->withErrors(['username' => 'Invalid username or password']);
     }
 
-} 
-
-public function employeeProfile()
+    public function employeeProfile()
     {
         $employee = Auth::guard('employee')->user();
-        
+
         if (!$employee) {
             return redirect()->route('signinPage');
         }
@@ -121,7 +119,7 @@ public function employeeProfile()
     public function dashboard()
     {
         $employee = Auth::guard('employee')->user();
-        
+
         if (!$employee) {
             return redirect()->route('signinPage');
         }

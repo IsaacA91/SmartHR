@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     protected $guard = 'employee';
 
-    protected $redirectTo = '/attendance';
+    protected $redirectTo = '/dashboard';
 
     public function showLoginForm()
     {
