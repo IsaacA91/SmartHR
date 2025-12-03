@@ -105,7 +105,9 @@ class EmployeeController extends Controller
             ->withErrors(['username' => 'Invalid username or password']);
     }
 
-    public function employeeProfile()
+} 
+
+public function employeeProfile()
     {
         $employee = Auth::guard('employee')->user();
         

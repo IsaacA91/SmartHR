@@ -5,18 +5,20 @@
     --blurple: #4849E8;
     --highlighter: #ddf344;
 }
-*{
+
+* {
     margin: 0;
     padding: 0;
 }
-.container.dash{
+
+.container.dash {
     max-width: 1100px;
     margin: 0 auto;
     padding: 28px 20px;
     box-sizing: border-box;
 }
 
-.greeting{
+.greeting {
     text-align: center;
     font-size: 50px;
     margin-bottom: 22px;
@@ -24,9 +26,9 @@
     text-shadow: 1px 1px 2px black;
 }
 
-.profile-link{
+.profile-link {
     display: block;
-    background: rgba(72,73,232,0.12);
+    background: rgba(72, 73, 232, 0.12);
     color: var(--blurple);
     border-radius: 16px;
     padding: 32px;
@@ -36,25 +38,28 @@
     text-shadow: 1px 1px 2px black;
     margin-bottom: 22px;
 }
-.profile-link i{
+
+.profile-link i {
     font-size: 60px;
 }
-.view{
+
+.view {
     font-size: 30px;
     font-weight: 600;
     text-shadow: 1px 1px 2px black;
 }
 
-.grid{
+.grid {
     display: flex;
     gap: 22px;
     padding: 10px 0;
 }
-.card{
+
+.card {
     flex: 1 1 0;
     min-width: 280px;
     min-height: 220px;
-    background: rgba(72,73,232,0.12);
+    background: rgba(72, 73, 232, 0.12);
     color: var(--blurple);
     border-radius: 14px;
     padding: 36px 24px;
@@ -68,20 +73,27 @@
     font-weight: 600;
     transition: transform 140ms ease, box-shadow 140ms ease;
 }
-.card i{
+
+.card i {
     font-size: 40px;
 }
-.card span{
+
+.card span {
     font-size: 28px;
     text-shadow: 1px 1px 2px black;
 }
-.card:hover{ 
-    transform: translateY(-6px); box-shadow: 0 14px 30px rgba(0,0,0,0.08); 
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
 }
 
-@media (max-width: 760px){
-    .grid{ flex-direction: column; }
-    .card{ 
+@media (max-width: 760px) {
+    .grid {
+        flex-direction: column;
+    }
+
+    .card {
         min-height: 180px;
         padding: 32px 20px;
     }
