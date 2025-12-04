@@ -145,9 +145,15 @@ class AttendanceController extends Controller
             }
 
             try {
-                $arrivalTime = Carbon::parse($openRecord->timeIn);
+                // Parse with full date to ensure accurate calculation
+                $arrivalTime = Carbon::parse($openRecord->workDay . ' ' . $openRecord->timeIn);
                 $departureTime = Carbon::now();
                 $totalHours = $departureTime->diffInMinutes($arrivalTime) / 60;
+                
+                // Ensure hours are not negative
+                if ($totalHours < 0) {
+                    $totalHours = 0;
+                }
 
                 $openRecord->update([
                     'timeOut' => $departureTime->toTimeString(),

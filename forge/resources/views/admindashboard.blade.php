@@ -38,7 +38,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100%
             z-index: 0;
             overflow: hidden;
             pointer-events: none;
@@ -121,7 +121,7 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
@@ -361,6 +361,12 @@
             }
         }
 
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -417,13 +423,15 @@
                 <div class="stats-number">{{ $presentToday }}</div>
                 <button type="submit">View All</button>
             </form>
+            <form class="stats-card" method='get' action="{{ route('admin.payroll.index') }}">
+                @csrf
+                <h3><i class="bi bi-cash-coin"></i> Payroll (Month)</h3>
+                <div class="stats-number">${{ number_format($totalPayroll, 0) }}</div>
+                <button type="submit">Manage Payroll</button>
+            </form>
             <div class="stats-card">
                 <h3><i class="bi bi-calendar-x"></i> Absent Today</h3>
                 <div class="stats-number">{{ $absentToday }}</div>
-            </div>
-            <div class="stats-card">
-                <h3><i class="bi bi-cash-coin"></i> Payroll (Month)</h3>
-                <div class="stats-number">${{ number_format($totalPayroll, 0) }}</div>
             </div>
         </div>
 

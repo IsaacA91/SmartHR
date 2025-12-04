@@ -41,7 +41,7 @@ class PayrollController extends Controller
             $overtimeHours = 0;
             
             foreach ($attendance as $record) {
-                $hours = $record->hoursWorked;
+                $hours = $record->hoursWorked ?? 0;
                 if ($hours > 8) {
                     $regularHours += 8;
                     $overtimeHours += ($hours - 8);
@@ -50,13 +50,18 @@ class PayrollController extends Controller
                 }
             }
             
+            // Calculate pay: base salary is monthly, overtime is calculated hourly
+            $regularPay = $employee->baseSalary ?? 0;
+            $overtimePay = $overtimeHours * ($employee->rate ?? 0) * 1.5;
+            $totalPay = $regularPay + $overtimePay;
+            
             $payrollData[] = [
                 'employee' => $employee,
                 'regularHours' => $regularHours,
                 'overtimeHours' => $overtimeHours,
-                'regularPay' => $regularHours * $employee->rate,
-                'overtimePay' => $overtimeHours * ($employee->rate * 1.5),
-                'totalPay' => ($regularHours * $employee->rate) + ($overtimeHours * ($employee->rate * 1.5)),
+                'regularPay' => $regularPay,
+                'overtimePay' => $overtimePay,
+                'totalPay' => $totalPay,
             ];
         }
         
@@ -130,7 +135,7 @@ class PayrollController extends Controller
         $payroll->calculatePay();
         $payroll->save();
         
-        return redirect()->route('payroll.show', $employee->employeeID)
+        return redirect()->route('admin.payroll.show', $employee->employeeID)
             ->with('success', 'Payroll processed successfully');
     }
 }

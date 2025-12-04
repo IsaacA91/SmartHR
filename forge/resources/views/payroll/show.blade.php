@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Payroll History - SmartHR</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -109,10 +110,15 @@
 </head>
 <body>
     <div class="payroll-container">
-        <a href="{{ route('payroll.index') }}" class="back-link">&larr; Back to Payroll Overview</a>
+        <a href="{{ route('admin.payroll.index') }}" class="back-link">&larr; Back to Payroll Overview</a>
 
         <div class="employee-header">
-            <h1>{{ $employee->firstName }} {{ $employee->lastName }}</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h1 style="margin: 0;">{{ $employee->firstName }} {{ $employee->lastName }}</h1>
+                <a href="{{ route('payslip.generate', [$employee->employeeID, date('n'), date('Y')]) }}" class="btn btn-success" target="_blank">
+                    <i class="bi bi-file-pdf"></i> Download Current Payslip (PDF)
+                </a>
+            </div>
             <div class="employee-info">
                 <div class="info-item">
                     <strong>Employee ID:</strong> {{ $employee->employeeID }}
@@ -144,6 +150,7 @@
                                 <th>Deductions</th>
                                 <th>Net Pay</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -163,6 +170,11 @@
                                     <span class="status-badge status-{{ strtolower($record->status) }}">
                                         {{ ucfirst($record->status) }}
                                     </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('payslip.generate', [$employee->employeeID, Carbon\Carbon::parse($record->payPeriodStart)->format('n'), Carbon\Carbon::parse($record->payPeriodStart)->format('Y')]) }}" class="btn btn-sm btn-outline-success" target="_blank" title="Download Payslip PDF">
+                                        <i class="bi bi-file-pdf"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach

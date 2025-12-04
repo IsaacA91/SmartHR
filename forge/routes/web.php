@@ -9,6 +9,7 @@ use App\Http\Controllers\Employee\LeaveRequestController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PayslipController;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
 
@@ -155,6 +156,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
         Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
+        
+        // Payslip PDF Generation
+        Route::get('/payslip/{employeeID}/{month}/{year}', [PayslipController::class, 'generatePDF'])->name('payslip.generate');
     });
 });
 
