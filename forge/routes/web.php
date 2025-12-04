@@ -10,6 +10,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PayslipController;
+use App\Http\Controllers\ProfilePhotoController;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,10 @@ Route::middleware(['auth:employee'])->group(function () {
     /* Lines 20-34 omitted */
     Route::patch('/leave/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave.cancel');
 
+    // Profile Photo Routes (Employee)
+    Route::post('/profile/photo', [ProfilePhotoController::class, 'uploadEmployeePhoto'])->name('employee.profile.photo.upload');
+    Route::delete('/profile/photo', [ProfilePhotoController::class, 'deleteEmployeePhoto'])->name('employee.profile.photo.delete');
+
     // Admin Leave Request Management
     Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('leave-requests.index');
@@ -75,6 +80,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
         Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
+    
+        // Profile Photo Routes (Admin)
+        Route::post('/profile/photo', [ProfilePhotoController::class, 'uploadAdminPhoto'])->name('admin.profile.photo.upload');
+        Route::delete('/profile/photo', [ProfilePhotoController::class, 'deleteAdminPhoto'])->name('admin.profile.photo.delete');
     });
 
     // Edit employee

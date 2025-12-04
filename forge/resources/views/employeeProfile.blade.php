@@ -480,11 +480,45 @@
             </form>
         </div>
 
+        @if(session('success'))
+            <div style="background: #22c55e; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-weight: 600; position: relative; z-index: 10;">
+                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div style="background: #ef4444; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative; z-index: 10;">
+                @foreach($errors->all() as $error)
+                    <div><i class="bi bi-exclamation-circle-fill"></i> {{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
         <div class="profile-card">
             <div class="left-profile">
                 <div class="profile-picture">
-                    <i class="bi bi-person-fill"></i>
+                    @if($employee->profilePhoto)
+                        <img src="{{ asset('storage/' . $employee->profilePhoto) }}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    @else
+                        <i class="bi bi-person-fill"></i>
+                    @endif
                 </div>
+                <form action="{{ route('employee.profile.photo.upload') }}" method="POST" enctype="multipart/form-data" style="margin-top: 1rem; text-align: center;">
+                    @csrf
+                    <input type="file" name="photo" id="photoInput" accept="image/*" style="display: none;" onchange="previewAndSubmit(this)">
+                    <button type="button" onclick="document.getElementById('photoInput').click()" class="btn" style="background: var(--primary-blue); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0.5rem; width: 100%;">
+                        <i class="bi bi-camera-fill"></i> Change Photo
+                    </button>
+                </form>
+                @if($employee->profilePhoto)
+                    <form action="{{ route('employee.profile.photo.delete') }}" method="POST" style="text-align: center;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;" onclick="return confirm('Are you sure you want to delete your profile photo?')">
+                            <i class="bi bi-trash-fill"></i> Remove Photo
+                        </button>
+                    </form>
+                @endif
             </div>
             <div class="right-profile">
                 <h1>{{ $employee->firstName }} {{ $employee->lastName }}</h1>
@@ -521,6 +555,31 @@
                 });
             }
         });
+
+        function previewAndSubmit(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileSize = file.size / 1024 / 1024; // Convert to MB
+                
+                // Validate file size (2MB max)
+                if (fileSize > 2) {
+                    alert('File size must be less than 2MB');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please upload a valid image file (JPEG, PNG, JPG, or GIF)');
+                    input.value = '';
+                    return;
+                }
+                
+                // Submit form automatically after validation
+                input.form.submit();
+            }
+        }
     </script>
 </body>
 </html>

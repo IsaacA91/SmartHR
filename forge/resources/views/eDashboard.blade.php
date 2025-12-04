@@ -435,9 +435,20 @@ body {
     </div>
 
     <div class="profile-section reveal">
-        <div class="profile-info">
-            <h3>{{ $employee->firstName }} {{ $employee->lastName }}</h3>
-            <p>{{ $employee->position ?? 'Employee' }} • {{ $employee->department->departmentName ?? 'N/A' }}</p>
+        <div style="display: flex; align-items: center; gap: 1.5rem; width: 100%;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary-blue); box-shadow: 0 4px 15px rgba(72, 73, 232, 0.2); flex-shrink: 0;">
+                @if($employee->profilePhoto)
+                    <img src="{{ asset('storage/' . $employee->profilePhoto) }}" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--light-blue), var(--primary-blue)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                @endif
+            </div>
+            <div class="profile-info" style="flex: 1;">
+                <h3>{{ $employee->firstName }} {{ $employee->lastName }}</h3>
+                <p>{{ $employee->position ?? 'Employee' }} • {{ $employee->department->departmentName ?? 'N/A' }}</p>
+            </div>
         </div>
         <a href="{{ route('employee.profile', ['id' => $employee->employeeID]) }}" class="profile-link">
             <i class="bi bi-person-circle"></i>

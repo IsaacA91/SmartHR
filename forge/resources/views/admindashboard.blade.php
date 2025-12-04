@@ -407,6 +407,49 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div style="background: #ef4444; color: white; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">
+                @foreach($errors->all() as $error)
+                    <div style="margin: 0.5rem 0;"><i class="bi bi-exclamation-circle-fill"></i> {{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <!-- Admin Profile Section -->
+        <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(72, 73, 232, 0.1); margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem;">
+            <div style="position: relative;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary-blue); box-shadow: 0 4px 15px rgba(72, 73, 232, 0.2);">
+                    @if(Auth::guard('admin')->user()->profilePhoto)
+                        <img src="{{ asset('storage/' . Auth::guard('admin')->user()->profilePhoto) }}" alt="Admin Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    @else
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--light-blue), var(--primary-blue)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    @endif
+                </div>
+                <form action="{{ route('admin.profile.photo.upload') }}" method="POST" enctype="multipart/form-data" style="position: absolute; bottom: -5px; right: -5px;">
+                    @csrf
+                    <input type="file" name="photo" id="adminPhotoInput" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                    <button type="button" onclick="document.getElementById('adminPhotoInput').click()" style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-blue); color: white; border: 3px solid white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(72, 73, 232, 0.3);">
+                        <i class="bi bi-camera-fill"></i>
+                    </button>
+                </form>
+            </div>
+            <div style="flex: 1;">
+                <h2 style="margin: 0 0 0.5rem 0; color: var(--primary-blue); font-size: 1.8rem;">{{ Auth::guard('admin')->user()->firstName }} {{ Auth::guard('admin')->user()->lastName }}</h2>
+                <p style="margin: 0; color: #64748b; font-size: 1rem;"><i class="bi bi-shield-fill-check"></i> Administrator • {{ Auth::guard('admin')->user()->adminID }}</p>
+            </div>
+            @if(Auth::guard('admin')->user()->profilePhoto)
+                <form action="{{ route('admin.profile.photo.delete') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete your profile photo?')" style="background: #ef4444; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                        <i class="bi bi-trash-fill"></i> Remove Photo
+                    </button>
+                </form>
+            @endif
+        </div>
+
         <h1>{{$companyName}}</h1>
         
         <!-- Stats Cards -->

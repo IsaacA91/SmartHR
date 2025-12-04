@@ -22,6 +22,7 @@ class Employee extends Authenticatable
         'lastName',
         'phone',
         'email',
+        'profilePhoto',
         'username',
         'password',
         'baseSalary',

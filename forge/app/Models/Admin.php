@@ -18,6 +18,7 @@ class Admin extends Authenticatable
         'firstName',
         'lastName',
         'companyID',
+        'profilePhoto',
         'password',
     ];
 
