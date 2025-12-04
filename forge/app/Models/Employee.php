@@ -1,23 +1,20 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Employee extends Authenticatable
+class Employee extends Model
 {
-    protected $guard = 'employee';
     protected $table = 'employee';
     protected $primaryKey = 'employeeID';
-    protected $keyType = 'string'; // If your employeeID is string
-    public $incrementing = false; // If your employeeID is not auto-incrementing
-    public $timestamps = false;
-
+    public $incrementing = false; 
+    protected $keyType = 'string';
     protected $fillable = [
         'employeeID',
-        'companyID',
+        'company',
         'position',
-        'departmentID',
+        'department',
         'firstName',
         'lastName',
         'phone',
@@ -25,15 +22,10 @@ class Employee extends Authenticatable
         'username',
         'password',
         'baseSalary',
-        'rate',
+        'rate'
     ];
 
     protected $hidden = [
-        'password',
+        'password'
     ];
-
-    public function AttendanceRecords()
-    {
-        return $this->hasMany(AttendanceRecord::class, 'employeeID', 'employeeID');
-    }
 }

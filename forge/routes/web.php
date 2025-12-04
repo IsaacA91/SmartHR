@@ -1,8 +1,8 @@
 <?php
-
-use App\Http\Controllers\Employee\Auth\LoginController;
-use App\Http\Controllers\Employee\AttendanceController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Employee;
+use App\Http\Controllers\EmployeeController;
+
 
 Route::prefix('employee')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('employee.login');
@@ -23,6 +23,17 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::get('/attendance/export', [AttendanceController::class, 'exportAttendance'])->name('attendance.export');
 });
 
-Route::get('/employeeProfile', function (){
-    return view('employeeProfile');
-});
+
+
+// Creates employee
+Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage' ]);
+Route::post('/test', [EmployeeController::class, 'employeeForm' ]);
+
+//signinPage
+Route::get('/signinPage', [EmployeeController::class, 'signinPage']);
+Route::post('/employeeProfile', [EmployeeController::class, 'login'])->name('employee.login');
+Route::get('/employeeProfile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
+
+//Edit employee
+Route::get('/editEmployee', [EmployeeController::class, 'viewEditEmployee']);
+Route::post('/editEmployee', [EmployeeController::class, 'editEmployee']);
