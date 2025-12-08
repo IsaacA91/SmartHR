@@ -200,17 +200,14 @@ class AdminController extends Controller
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
         ]);
 
-        /** @var \App\Models\Admin $admin */
-        $admin = auth()->guard('admin')->user();
+        $admin = Admin::find(auth()->guard('admin')->id());
 
-        if ($admin) {
-            // Stores in storage/app/public/images/profile_photos
-            $path = $request->file('photo')->store('images/profile_photos', 'public');
+        $path = $request->file('photo')->store('images/profile_photos', 'public');
 
-            $admin->profilePhoto = $path;
-            $admin->save();
-        }
+        $admin->profilePhoto = $path;
+        $admin->save();
 
         return back()->with('success', 'Profile photo updated successfully!');
     }
+
 }

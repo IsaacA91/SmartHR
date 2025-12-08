@@ -11,7 +11,7 @@
         <div class="avatar">
             <div class="img_container">
                 @if($admin->profilePhoto)
-                    <img src="{{ asset('storage/' . $admin->profilePhoto) }}" class="profile-img">
+                    <img src="{{ asset('storage/' . $admin->profilePhoto) }}?v={{ time() }}" class="profile-img">
                 @else
                     <div class="profile-placeholder">
                         <i class="bi bi-person-fill"></i>
@@ -40,11 +40,21 @@
 
         <form action="{{ route('admin.uploadProfilePhoto') }}" method="POST" enctype="multipart/form-data" class="photo-form">
             @csrf
-            <input type="file" name="photo" id="photoInput" accept="image/*" style="display: none;" onchange="previewAndSubmit(this)">
-            <button type="button" onclick="document.getElementById('photoInput').click()" class="change-photo-btn">
-                <i class="bi bi-camera-fill"></i> Change Photo
+
+            <input 
+                type="file" 
+                name="photo" 
+                id="photoInput" 
+                accept="image/*" 
+                style="display: none;" 
+                onchange="this.form.submit()"
+            >
+
+            <button type="button" class="change-photo-btn" onclick="document.getElementById('photoInput').click()">
+                <i class="bi bi-camera-fill"></i> Upload Photo
             </button>
         </form>
+
     </div>
 </div>
 @endsection
