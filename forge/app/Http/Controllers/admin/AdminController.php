@@ -7,10 +7,12 @@ use App\Models\AttendanceRecord;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\LeaveRequest;
+use App\Models\Admin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 
 class AdminController extends Controller
 {
@@ -149,6 +151,13 @@ class AdminController extends Controller
         return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
     }
 
+    public function adminProfile()
+    {
+        // Return the authenticated admin's profile view
+        $admin = Auth::guard('admin')->user();
+        return view('adminProfile', compact('admin'));
+    }
+
     public function showPresentEmployees(Request $request)
     {
         $today = Carbon::today();
@@ -183,5 +192,25 @@ class AdminController extends Controller
         $presentToday = $query->orderBy('employee.employeeID')->paginate(10)->withQueryString();
 
         return view('presentList', compact('presentToday'));
+    }
+        
+    public function uploadProfilePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
+        ]);
+
+        /** @var \App\Models\Admin $admin */
+        $admin = auth()->guard('admin')->user();
+
+        if ($admin) {
+            // Stores in storage/app/public/images/profile_photos
+            $path = $request->file('photo')->store('images/profile_photos', 'public');
+
+            $admin->profilePhoto = $path;
+            $admin->save();
+        }
+
+        return back()->with('success', 'Profile photo updated successfully!');
     }
 }

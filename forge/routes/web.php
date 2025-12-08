@@ -138,6 +138,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/', fn() => redirect()->route('admin.dashboard'));
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/returnToDash', [AdminController::class, 'dashboard'])->name('admin.dashboardMain');
+        Route::get('/adminProfile', [AdminController::class, 'adminProfile'])->name('admin.profile');
+        Route::post('/adminProfile/uploadPhoto', [AdminController::class, 'uploadProfilePhoto'])->name('admin.uploadProfilePhoto');
+    });
+        
 
         // Employee Management
         Route::get('/employeeList', [AdminController::class, 'employeeList'])->name('admin.employeeList');
@@ -146,7 +150,7 @@ Route::prefix('admin')->group(function () {
         Route::put('/employee/{id}', [AdminController::class, 'updateEmployee'])->name('admin.employee.update');
         Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage'])->name('admin.employee.form');
         Route::post('/employeeCreationForm', [EmployeeController::class, 'employeeForm'])->name('admin.employee.create');
-        Route::get('/remove/employee/{id}', [AdminCOntroller::class, 'removeEmployee'])->name('admin.remove.employee');
+        Route::get('/remove/employee/{id}', [AdminController::class, 'removeEmployee'])->name('admin.remove.employee');
         // Leave Requests
         Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('admin.leave-requests.index');
         Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('admin.leave-requests.update-status');
@@ -155,7 +159,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
         Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
-    });
+
+        
 });
 
 // Creates employee

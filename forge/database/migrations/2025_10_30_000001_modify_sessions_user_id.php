@@ -11,12 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Get the list of all foreign keys
+        $connection = Schema::getConnection();
+        $table = 'sessions';
+        
+        // Use raw SQL to drop any foreign keys on user_id column
+        try {
+            $connection->statement("ALTER TABLE {$table} DROP FOREIGN KEY sessions_user_id_foreign");
+        } catch (\Exception $e) {
+            // FK might not exist
+        }
+        
         Schema::table('sessions', function (Blueprint $table) {
-            // First drop the existing column
-            $table->dropColumn('user_id');
+            // Check if column exists before modifying
+            if (Schema::hasColumn('sessions', 'user_id')) {
+                $table->dropColumn('user_id');
+            }
             
-            // Then recreate it as string
-            $table->string('user_id')->nullable();
+            // Add as string column
+            $table->string('user_id', 255)->nullable()->after('id');
         });
     }
 
@@ -25,12 +38,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sessions', function (Blueprint $table) {
-            // First drop the string column
-            $table->dropColumn('user_id');
-            
-            // Then recreate it as unsigned big integer
-            $table->unsignedBigInteger('user_id')->nullable();
-        });
+        // Try to drop the column if it exists
+        if (Schema::hasTable('sessions') && Schema::hasColumn('sessions', 'user_id')) {
+            Schema::table('sessions', function (Blueprint $table) {
+                $table->dropColumn('user_id');
+            });
+        }
     }
 };
