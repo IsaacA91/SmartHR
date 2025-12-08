@@ -6,13 +6,13 @@ use App\Http\Controllers\Admin\LeaveRequestController as AdminLeaveRequestContro
 use App\Http\Controllers\Employee\Auth\LoginController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\LeaveRequestController;
+use App\Http\Controllers\AttendanceCorrectionController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PayslipController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\WorkScheduleController;
-use App\Http\Controllers\AttendanceCorrectionController;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
 
@@ -83,7 +83,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
         Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
         Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
-    
+
         // Profile Photo Routes (Admin)
         Route::post('/profile/photo', [ProfilePhotoController::class, 'uploadAdminPhoto'])->name('admin.profile.photo.upload');
         Route::delete('/profile/photo', [ProfilePhotoController::class, 'deleteAdminPhoto'])->name('admin.profile.photo.delete');
@@ -175,27 +175,29 @@ Route::prefix('admin')->group(function () {
         Route::get('/', fn() => redirect()->route('admin.dashboard'));
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/returnToDash', [AdminController::class, 'dashboard'])->name('admin.dashboardMain');
-
-        // Employee Management
-        Route::get('/employeeList', [AdminController::class, 'employeeList'])->name('admin.employeeList');
-        Route::get('/presentList', [AdminController::class, 'showPresentEmployees'])->name('admin.presentList');
-        Route::get('/employee/{id}/edit', [AdminController::class, 'showEditForm'])->name('admin.editForm');
-        Route::put('/employee/{id}', [AdminController::class, 'updateEmployee'])->name('admin.employee.update');
-        Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage'])->name('admin.employee.form');
-        Route::post('/employeeCreationForm', [EmployeeController::class, 'employeeForm'])->name('admin.employee.create');
-        Route::get('/remove/employee/{id}', [AdminCOntroller::class, 'removeEmployee'])->name('admin.remove.employee');
-        // Leave Requests
-        Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('admin.leave-requests.index');
-        Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('admin.leave-requests.update-status');
-
-        // Payroll
-        Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
-        Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
-        Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
-        
-        // Payslip PDF Generation
-        Route::get('/payslip/{employeeID}/{month}/{year}', [PayslipController::class, 'generatePDF'])->name('payslip.generate');
+        Route::get('/adminProfile', [AdminController::class, 'adminProfile'])->name('admin.profile');
+        Route::post('/adminProfile/uploadPhoto', [AdminController::class, 'uploadProfilePhoto'])->name('admin.uploadProfilePhoto');
     });
+
+    // Employee Management
+    Route::get('/employeeList', [AdminController::class, 'employeeList'])->name('admin.employeeList');
+    Route::get('/presentList', [AdminController::class, 'showPresentEmployees'])->name('admin.presentList');
+    Route::get('/employee/{id}/edit', [AdminController::class, 'showEditForm'])->name('admin.editForm');
+    Route::put('/employee/{id}', [AdminController::class, 'updateEmployee'])->name('admin.employee.update');
+    Route::get('/employeeCreation', [EmployeeController::class, 'employeeFormPage'])->name('admin.employee.form');
+    Route::post('/employeeCreationForm', [EmployeeController::class, 'employeeForm'])->name('admin.employee.create');
+    Route::get('/remove/employee/{id}', [AdminController::class, 'removeEmployee'])->name('admin.remove.employee');
+    // Leave Requests
+    Route::get('/leave-requests', [AdminLeaveRequestController::class, 'index'])->name('admin.leave-requests.index');
+    Route::patch('/leave-requests/{leaveRequest}/status', [AdminLeaveRequestController::class, 'updateStatus'])->name('admin.leave-requests.update-status');
+
+    // Payroll
+    Route::get('/payroll', [PayrollController::class, 'index'])->name('admin.payroll.index');
+    Route::get('/payroll/{employeeID}', [PayrollController::class, 'show'])->name('admin.payroll.show');
+    Route::post('/payroll/process', [PayrollController::class, 'process'])->name('admin.payroll.process');
+
+    // Payslip PDF Generation
+    Route::get('/payslip/{employeeID}/{month}/{year}', [PayslipController::class, 'generatePDF'])->name('payslip.generate');
 });
 
 // Creates employee

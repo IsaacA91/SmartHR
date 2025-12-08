@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\AttendanceRecord;
 use App\Models\Department;
 use App\Models\Employee;
@@ -105,25 +106,26 @@ class AdminController extends Controller
     {
         $companyID = Auth::guard('admin')->user()->companyID;
         $search = $request->get('search');
-        
+
         $employees = Employee::with('department')
             ->where('companyID', $companyID)
-            ->when($search, function($query, $search) {
-                return $query->where(function($q) use ($search) {
-                    $q->where('firstName', 'LIKE', "%{$search}%")
-                      ->orWhere('lastName', 'LIKE', "%{$search}%")
-                      ->orWhere('email', 'LIKE', "%{$search}%")
-                      ->orWhere('employeeID', 'LIKE', "%{$search}%")
-                      ->orWhereHas('department', function($deptQuery) use ($search) {
-                          $deptQuery->where('departmentName', 'LIKE', "%{$search}%");
-                      });
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q
+                        ->where('firstName', 'LIKE', "%{$search}%")
+                        ->orWhere('lastName', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%")
+                        ->orWhere('employeeID', 'LIKE', "%{$search}%")
+                        ->orWhereHas('department', function ($deptQuery) use ($search) {
+                            $deptQuery->where('departmentName', 'LIKE', "%{$search}%");
+                        });
                 });
             })
             ->orderBy('lastName');
 
         // If AJAX request, return JSON for autocomplete
         if ($request->ajax() || $request->get('ajax')) {
-            $results = $employees->limit(10)->get()->map(function($employee) {
+            $results = $employees->limit(10)->get()->map(function ($employee) {
                 return [
                     'employeeID' => $employee->employeeID,
                     'firstName' => $employee->firstName,
@@ -159,6 +161,13 @@ class AdminController extends Controller
         return redirect()->route('admin.employeeList')->with('success', 'Employee updated successfully.');
     }
 
+    public function adminProfile()
+    {
+        // Return the authenticated admin's profile view
+        $admin = Auth::guard('admin')->user();
+        return view('adminProfile', compact('admin'));
+    }
+
     public function showPresentEmployees(Request $request)
     {
         $today = Carbon::today();
@@ -182,11 +191,12 @@ class AdminController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('employee.firstName', 'LIKE', "%{$search}%")
-                  ->orWhere('employee.lastName', 'LIKE', "%{$search}%")
-                  ->orWhere('employee.employeeID', 'LIKE', "%{$search}%")
-                  ->orWhere('employee.position', 'LIKE', "%{$search}%")
-                  ->orWhere('department.departmentName', 'LIKE', "%{$search}%");
+                $q
+                    ->where('employee.firstName', 'LIKE', "%{$search}%")
+                    ->orWhere('employee.lastName', 'LIKE', "%{$search}%")
+                    ->orWhere('employee.employeeID', 'LIKE', "%{$search}%")
+                    ->orWhere('employee.position', 'LIKE', "%{$search}%")
+                    ->orWhere('department.departmentName', 'LIKE', "%{$search}%");
             });
         }
 
@@ -211,16 +221,33 @@ class AdminController extends Controller
 
         // Apply search filter if provided
         if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where(DB::raw('CONCAT(e.firstName, " ", e.lastName)'), 'LIKE', "%{$search}%")
-                  ->orWhere('l.approval', 'LIKE', "%{$search}%")
-                  ->orWhere('l.employeeID', 'LIKE', "%{$search}%")
-                  ->orWhere('l.leaveRecordID', 'LIKE', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q
+                    ->where(DB::raw('CONCAT(e.firstName, " ", e.lastName)'), 'LIKE', "%{$search}%")
+                    ->orWhere('l.approval', 'LIKE', "%{$search}%")
+                    ->orWhere('l.employeeID', 'LIKE', "%{$search}%")
+                    ->orWhere('l.leaveRecordID', 'LIKE', "%{$search}%");
             });
         }
 
         $leaveRequests = $query->orderBy('l.startDate', 'desc')->get();
 
         return view('adminLeaveDirectory', compact('leaveRequests'));
+    }
+
+    public function uploadProfilePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
+        ]);
+
+        $admin = Admin::find(auth()->guard('admin')->id());
+
+        $path = $request->file('photo')->store('images/profile_photos', 'public');
+
+        $admin->profilePhoto = $path;
+        $admin->save();
+
+        return back()->with('success', 'Profile photo updated successfully!');
     }
 }

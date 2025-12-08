@@ -20,6 +20,7 @@ class Admin extends Authenticatable
         'companyID',
         'profilePhoto',
         'password',
+        'profilePhoto',
     ];
 
     protected $hidden = [
