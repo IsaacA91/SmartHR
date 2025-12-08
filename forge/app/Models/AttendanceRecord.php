@@ -9,6 +9,8 @@ class AttendanceRecord extends Model
 {
     protected $table = 'attendancerecord';
     protected $primaryKey = 'recordID';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [

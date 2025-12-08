@@ -1,0 +1,279 @@
+:root {
+  --blue-white: #F4F9FF;
+  --sky-blue: #58b0e0;
+  --shadow-blue: #6f7caa;
+  --blurple: #4849e8;
+  --highlighter: #ddf344;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: block;
+  padding: 20px;
+  padding-top: 80px;
+  background: var(--blue-white);
+  font-family: "Actor", "Patrick Hand", "Momo Trust Display", "Poltawski Nowy", sans-serif;
+}
+
+.profile-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-white);
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 750px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(88, 176, 224, 0.15);
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 64px 56px;
+  border: 1px solid rgba(88, 176, 224, 0.1);
+  position: relative;
+}
+
+.avatar {
+  width: 100%;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.img_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 40;
+}
+
+.profile-img {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 4px solid white;
+  object-fit: cover;
+  display: block;
+  z-index: 40;
+  box-shadow: 0 4px 12px rgba(88, 176, 224, 0.2);
+}
+
+.profile-placeholder {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 4px solid white;
+  background: linear-gradient(135deg, var(--sky-blue) 0%, rgba(88, 176, 224, 0.3) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 56px;
+  box-shadow: 0 4px 12px rgba(88, 176, 224, 0.2);
+}
+
+.overlay-bar {
+  display: none;
+}
+
+.headings {
+  text-align: center;
+  line-height: 1.4;
+  width: 100%;
+}
+
+.admin-name {
+  font-size: 1.8rem;
+  font-family: Georgia, serif;
+  font-weight: 600;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.admin-role {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.info-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  list-style: none;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.info-list li {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1.5px dotted rgba(68, 68, 68, 0.4);
+  font-size: 1rem;
+  font-weight: 600;
+  padding-bottom: 8px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.info-list li:last-child {
+  border-bottom: none;
+}
+
+.info-list li i {
+  color: var(--blurple);
+  font-size: 1.5rem;
+  min-width: 24px;
+}
+
+.info-list p {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photo-form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.change-photo-btn {
+  width: 12em;       
+  height: 4em;       
+  font-size: 18px;   
+  border-radius: 30em;
+  font-family: inherit;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  background: white;
+  color: black;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.change-photo-btn::before {
+  content: '';
+  width: 0;
+  height: 4em;
+  border-radius: 30em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right, var(--sky-blue) 0%, var(--blurple) 100%);
+  transition: 0.5s ease;
+  display: block;
+  z-index: -1;
+}
+
+.change-photo-btn:hover::before {
+  width: 12em;
+}
+
+.change-photo-btn:hover {
+  color: white;
+}
+
+.change-photo-btn:active {
+  transform: scale(0.98);
+}
+
+.change-photo-btn i {
+  color: black;
+}
+
+.profile-divider {
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--sky-blue), var(--blurple));
+  border-radius: 2px;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+    padding: 16px;
+  }
+
+  .profile-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 32px 24px;
+    gap: 16px;
+  }
+
+  .profile-img,
+  .profile-placeholder {
+    width: 160px;
+    height: 160px;
+    border-width: 3px;
+  }
+
+  .admin-name {
+    font-size: 1.4rem;
+  }
+
+  .admin-role {
+    font-size: 0.95rem;
+  }
+
+  .info-list {
+    padding: 0 12px;
+  }
+
+  .info-list li {
+    font-size: 0.9rem;
+  }
+
+  .change-photo-btn {
+    width: 10em;
+    height: 3.5em;
+    font-size: 16px;
+    gap: 8px;
+  }
+
+  .change-photo-btn::before {
+    height: 3.5em;
+  }
+
+  .change-photo-btn:hover::before {
+    width: 10em;
+  }
+}

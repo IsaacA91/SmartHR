@@ -22,6 +22,7 @@ class Employee extends Authenticatable
         'lastName',
         'phone',
         'email',
+        'profilePhoto',
         'username',
         'password',
         'baseSalary',
@@ -31,6 +32,16 @@ class Employee extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departmentID', 'departmentID');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'companyID', 'companyID');
+    }
 
     public function AttendanceRecords()
     {

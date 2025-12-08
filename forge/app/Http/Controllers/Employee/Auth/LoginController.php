@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     protected $guard = 'employee';
 
-    protected $redirectTo = '/attendance';
+    protected $redirectTo = '/dashboard';
 
     public function showLoginForm()
     {
@@ -43,6 +43,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/employee/login');
+        return redirect()->route('signinPage');
     }
 }
