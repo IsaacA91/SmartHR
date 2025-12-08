@@ -222,15 +222,17 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
         }
 
         .alert-success {
-            background: linear-gradient(135deg, var(--accent-yellow), rgba(221, 227, 68, 0.7));
-            color: var(--primary-blue);
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
             font-weight: 600;
+            border: 1px solid rgba(34, 197, 94, 0.2);
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, #ff6b6b, rgba(255, 107, 107, 0.7));
-            color: white;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
             font-weight: 600;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         /* Employee Info Section */
@@ -293,27 +295,32 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
 
         /* Status Badge */
         .status-badge {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             padding: 15px 30px;
             border-radius: 50px;
             font-weight: 600;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             animation: pulse 2s infinite ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.03); }
         }
 
-        .badge.bg-success {
-            background: linear-gradient(135deg, var(--accent-yellow), rgba(221, 227, 68, 0.8)) !important;
-            color: var(--primary-blue) !important;
+        .status-badge.bg-success {
+            background: rgba(34, 197, 94, 0.15) !important;
+            color: #16a34a !important;
+            border: 2px solid rgba(34, 197, 94, 0.3);
         }
 
-        .badge.bg-secondary {
-            background: linear-gradient(135deg, #6c757d, #95a5a6) !important;
-            color: white !important;
+        .status-badge.bg-secondary {
+            background: rgba(100, 116, 139, 0.15) !important;
+            color: #475569 !important;
+            border: 2px solid rgba(100, 116, 139, 0.3);
         }
 
         /* Clock Button */
@@ -412,35 +419,80 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
             padding: 8px 15px;
             font-size: 0.85rem;
             font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .table .badge.bg-success {
+            background: rgba(34, 197, 94, 0.15) !important;
+            color: #16a34a !important;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .badge.bg-warning {
-            background: linear-gradient(135deg, var(--light-blue), rgba(171, 196, 255, 0.8)) !important;
-            color: var(--primary-blue) !important;
+            background: rgba(221, 243, 68, 0.2) !important;
+            color: #65a30d !important;
+            border: 1px solid rgba(221, 243, 68, 0.5);
         }
 
         .badge.bg-info {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)) !important;
-            color: white !important;
+            background: rgba(72, 73, 232, 0.1) !important;
+            color: var(--primary-blue) !important;
+            border: 1px solid rgba(72, 73, 232, 0.3);
         }
 
         /* Stats Cards */
         .stats-card {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
-            color: white;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            color: var(--primary-blue);
+            border-radius: 24px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 15px 40px rgba(72, 73, 232, 0.3);
+            box-shadow: 0 10px 40px rgba(72, 73, 232, 0.12);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
             animation: cardSlideIn 0.6s ease-out backwards;
+            border: 2px solid rgba(72, 73, 232, 0.1);
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
+        }
+
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(72, 73, 232, 0.1), rgba(171, 196, 255, 0.2));
+            border-radius: 16px;
+            z-index: 0;
         }
 
         .stats-card:nth-child(1) { animation-delay: 0.1s; }
         .stats-card:nth-child(2) { animation-delay: 0.2s; }
         .stats-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .stats-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
+        }
+
+        .stats-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--accent-yellow), #a3e635);
+        }
+
+        .stats-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--light-blue), var(--primary-blue));
+        }
 
         @keyframes cardSlideIn {
             from {
@@ -453,40 +505,39 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
             }
         }
 
-        .stats-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            transform: translate(30%, -30%);
-        }
-
         .stats-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(72, 73, 232, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(72, 73, 232, 0.2);
+            border-color: rgba(72, 73, 232, 0.3);
         }
 
         .stats-card h5 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             margin-bottom: 15px;
-            opacity: 0.9;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             position: relative;
             z-index: 1;
         }
 
         .stats-card h3 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-yellow), white);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary-blue);
             position: relative;
+            z-index: 1;
+            margin: 0;
+        }
+
+        .stats-card .stats-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            opacity: 0.3;
             z-index: 1;
         }
 
@@ -590,7 +641,7 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
                         <div class="col-md-6">
                             <p class="mb-2"><strong><i class="bi bi-person-badge"></i> Employee:</strong> {{ $employee->firstName }} {{ $employee->lastName }}</p>
                             <p class="mb-2"><strong><i class="bi bi-hash"></i> ID:</strong> {{ $employeeID }}</p>
-                            <p class="mb-0"><strong><i class="bi bi-building"></i> Department:</strong> <?php echo $employee['department']; ?></p>
+                            <p class="mb-0"><strong><i class="bi bi-building"></i> Department:</strong> {{ $employee->department->departmentName ?? $employee->departmentID }}</p>
                         </div>
                         <div class="col-md-6 text-end">
                             <p class="mb-2"><strong><i class="bi bi-calendar-check"></i> Date:</strong> <?php echo date('F d, Y'); ?></p>
@@ -655,8 +706,8 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
                                     @if(isset($todayRecords) && $todayRecords->count())
                                         @foreach($todayRecords as $t)
                                             <tr>
-                                                <td>{!! $t->timeIn ? \Carbon\Carbon::parse($t->timeIn)->format('h:i A') : '-' !!}</td>
-                                                <td>{!! $t->timeOut ? \Carbon\Carbon::parse($t->timeOut)->format('h:i A') : '<span class="text-warning">Still Clocked In</span>' !!}</td>
+                                                <td>{!! $t->timeIn ? date('g:i A', strtotime($t->timeIn)) : '-' !!}</td>
+                                                <td>{!! $t->timeOut ? date('g:i A', strtotime($t->timeOut)) : '<span class="text-warning">Still Clocked In</span>' !!}</td>
                                                 <td>{!! $t->hoursWorked ? number_format($t->hoursWorked, 1) . ' hrs' : '-' !!}</td>
                                                 <td>
                                                     @if($t->timeOut && $t->hoursWorked >= 8)
@@ -707,7 +758,7 @@ $stats = AttendanceRecord::where('employeeID', $employeeID)
                         <a href="{{ route('attendance.history') }}" class="btn-link-custom">
                             <i class="bi bi-calendar-week"></i> View History
                         </a>
-                        <a href="#" class="btn-link-custom disabled">
+                        <a href="{{ route('leave.create') }}" class="btn-link-custom">
                             <i class="bi bi-calendar-x"></i> Request Leave
                         </a>
                     </div>

@@ -90,7 +90,7 @@
             max-width: 95%;
             margin: 0 auto;
             padding: 1.5rem;
-            padding-top: 2.5rem;
+            padding-top: 5rem;
             position: relative;
             z-index: 1;
         }
@@ -130,13 +130,14 @@
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 1.5rem;
+            padding: 2.5rem;
             box-shadow: 0 8px 24px rgba(72, 73, 232, 0.1);
             border: 2px solid transparent;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             animation: cardSlideIn 0.6s ease-out both;
+            min-height: 200px;
         }
 
         .stats-card:nth-child(1) { animation-delay: 0.1s; }
@@ -466,16 +467,34 @@
                 <div class="stats-number">{{ $presentToday }}</div>
                 <button type="submit">View All</button>
             </form>
+            <div class="stats-card">
+                <h3><i class="bi bi-calendar-x"></i> Absent Today</h3>
+                <div class="stats-number">{{ $absentToday }}</div>
+            </div>
             <form class="stats-card" method='get' action="{{ route('admin.payroll.index') }}">
                 @csrf
                 <h3><i class="bi bi-cash-coin"></i> Payroll (Month)</h3>
                 <div class="stats-number">${{ number_format($totalPayroll, 0) }}</div>
                 <button type="submit">Manage Payroll</button>
             </form>
-            <div class="stats-card">
-                <h3><i class="bi bi-calendar-x"></i> Absent Today</h3>
-                <div class="stats-number">{{ $absentToday }}</div>
-            </div>
+            <form class="stats-card" method='get' action="{{ route('schedules.index') }}">
+                @csrf
+                <h3><i class="bi bi-calendar-week"></i> Schedules</h3>
+                <div class="stats-number"><i class="bi bi-clock-history"></i></div>
+                <button type="submit">Manage Schedules</button>
+            </form>
+            <form class="stats-card" method='get' action="{{ route('attendance.corrections.index') }}">
+                @csrf
+                <h3><i class="bi bi-pencil-square"></i> Corrections</h3>
+                <div class="stats-number"><i class="bi bi-check2-circle"></i></div>
+                <button type="submit">Attendance Fixes</button>
+            </form>
+            <form class="stats-card" method='get' action="{{ route('admin.leave.directory') }}">
+                @csrf
+                <h3><i class="bi bi-calendar2-check"></i> Leave Requests</h3>
+                <div class="stats-number">{{ $pendingLeaveRequests ?? 0 }}</div>
+                <button type="submit">View All Requests</button>
+            </form>
         </div>
 
         <!-- Charts -->

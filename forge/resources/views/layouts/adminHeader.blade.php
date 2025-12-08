@@ -18,9 +18,10 @@
         </div>
         <div class="navbar">
             <a href="{{route('admin.dashboardMain')}}">Home</a>
+            <a href="{{route('admin.leave.directory')}}">Leave Requests</a>
             <form action="{{ route('admin.logout') }}" method="POST" style="display: inline;">
                 @csrf
-                <button type="submit" style="background: none; border: none; color: var(--blue-white); cursor: pointer; padding: 0; font: inherit; font-size: x-large;">Logout</button>
+                <button type="submit" style="background: none; border: none; color: var(--blue-white); cursor: pointer; padding: 0; font: inherit;">Logout</button>
             </form>
         </div>
     </header>

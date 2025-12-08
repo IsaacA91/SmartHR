@@ -21,8 +21,6 @@ class WorkSchedule extends Model
 
     protected $casts = [
         'shiftDate' => 'date',
-        'shiftBegin' => 'datetime',
-        'shiftEnd' => 'datetime'
     ];
 
     public function employee()

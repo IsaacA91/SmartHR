@@ -93,7 +93,7 @@ class EmployeeController extends Controller
         if ($employee && Hash::check($request->password, $employee->password)) {
             // Use the employee guard for authentication
             Auth::guard('employee')->loginUsingId($employee->employeeID);
-            
+
             return redirect('/dashboard');
         }
 
@@ -122,5 +122,47 @@ class EmployeeController extends Controller
         }
 
         return view('eDashboard', ['employee' => $employee]);
+    }
+
+    public function leaveDirectory()
+    {
+        $employee = Auth::guard('employee')->user();
+
+        if (!$employee) {
+            return redirect()->route('signinPage');
+        }
+
+        // Get leave requests for the current employee
+        $leaveRequests = DB::table('leaverequests')
+            ->where('employeeID', $employee->employeeID)
+            ->orderBy('startDate', 'desc')
+            ->get();
+
+        return view('employeeLeaveDirectory', [
+            'employee' => $employee,
+            'leaveRequests' => $leaveRequests
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $employee = Auth::guard('employee')->user();
+
+        // Check if current password is correct
+        if (!Hash::check($request->current_password, $employee->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect']);
+        }
+
+        // Update password
+        $employee->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return back()->with('success', 'Password changed successfully!');
     }
 }

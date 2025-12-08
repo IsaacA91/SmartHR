@@ -389,6 +389,62 @@
             padding: 0 20px 20px 20px;
         }
     }
+
+    /* Clock In Time Styling */
+    .clock-in-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(34, 197, 94, 0.1);
+        color: #16a34a;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .clock-in-time i {
+        font-size: 1rem;
+    }
+
+    /* Live Timer Styling */
+    .live-timer {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, rgba(72, 73, 232, 0.1), rgba(171, 196, 255, 0.15));
+        color: var(--primary-blue);
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border: 1px solid rgba(72, 73, 232, 0.2);
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+        animation: timerPulse 2s infinite ease-in-out;
+    }
+
+    .live-timer i {
+        font-size: 1rem;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+        100% { transform: rotate(180deg); }
+    }
+
+    @keyframes timerPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(72, 73, 232, 0.2); }
+        50% { box-shadow: 0 0 0 4px rgba(72, 73, 232, 0.1); }
+    }
+
+    .timer-display {
+        min-width: 75px;
+        text-align: center;
+    }
 </style>
 
 <!-- Animated Background Shapes -->
@@ -412,28 +468,28 @@
 <div class="employee-table-container">
     <h2><i class="bi bi-people-fill"></i> Employees Present Today</h2>
 
-    <div class="search-container">
-        <form method="GET" action="{{ route('admin.presentList') }}" style="display: flex; gap: 10px; width: 100%; position: relative;">
-            <div style="flex: 1; position: relative;">
-                <input 
-                    type="text" 
-                    id="searchInput"
-                    name="search" 
-                    placeholder="Search by name, employee ID, department, or position..." 
-                    value="{{ request('search') }}"
-                    autocomplete="off"
-                >
-                <div id="searchSuggestions" class="search-suggestions"></div>
-            </div>
-            <button type="submit"><i class="bi bi-search"></i> Search</button>
-            @if(request('search'))
+    <div class="table-wrapper">
+        <div class="search-container">
+            <form method="GET" action="{{ route('admin.presentList') }}" style="display: flex; gap: 10px; width: 100%; position: relative;">
+                <div style="flex: 1; position: relative;">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        name="search" 
+                        placeholder="Search by name, employee ID, department, or position..." 
+                        value="{{ request('search') }}"
+                        autocomplete="off"
+                    >
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </div>
+                <button type="submit"><i class="bi bi-search"></i> Search</button>
+                @if(request('search'))
                 <a href="{{ route('admin.presentList') }}"><button type="button"><i class="bi bi-x-circle"></i> Clear</button></a>
             @endif
         </form>
     </div>
 
     @if ($presentToday->count())
-        <div class="table-wrapper">
             <table class="employee-table">
                 <thead>
                     <tr>
@@ -442,6 +498,8 @@
                         <th><i class="bi bi-person"></i> Full Name</th>
                         <th><i class="bi bi-building"></i> Department</th>
                         <th><i class="bi bi-briefcase"></i> Position</th>
+                        <th><i class="bi bi-clock"></i> Clocked In At</th>
+                        <th><i class="bi bi-stopwatch"></i> Time Worked</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -452,18 +510,59 @@
                             <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
                             <td>{{ $employee->departmentName ?? '—' }}</td>
                             <td>{{ $employee->position ?? '—' }}</td>
+                            <td>
+                                <span class="clock-in-time">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    {{ date('g:i A', strtotime($employee->timeIn)) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="live-timer" data-clockin="{{ strtotime($employee->timeIn) * 1000 }}">
+                                    <i class="bi bi-hourglass-split"></i>
+                                    <span class="timer-display">00:00:00</span>
+                                </span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        </div>
         <div class="pagination-wrapper">
             {{ $presentToday->links('pagination::bootstrap-4') }}
         </div>
+    </div>
     @else
         <div class="table-wrapper">
             <div class="no-data"><i class="bi bi-inbox"></i> No employees found.</div>
         </div>
     @endif
 </div>
+
+<script>
+    // Live Timer Function
+    function updateTimers() {
+        const timers = document.querySelectorAll('.live-timer');
+        const now = Date.now();
+        
+        timers.forEach(timer => {
+            const clockInTimestamp = parseInt(timer.getAttribute('data-clockin'));
+            if (clockInTimestamp) {
+                const diff = Math.floor((now - clockInTimestamp) / 1000); // difference in seconds
+                
+                const hours = Math.floor(diff / 3600);
+                const minutes = Math.floor((diff % 3600) / 60);
+                const seconds = diff % 60;
+                
+                const display = timer.querySelector('.timer-display');
+                display.textContent = 
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+            }
+        });
+    }
+    
+    // Update timers every second
+    updateTimers();
+    setInterval(updateTimers, 1000);
+</script>
 @endsection

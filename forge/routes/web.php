@@ -11,6 +11,8 @@ use App\Http\Controllers\EmployeePayrollController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PayslipController;
 use App\Http\Controllers\ProfilePhotoController;
+use App\Http\Controllers\WorkScheduleController;
+use App\Http\Controllers\AttendanceCorrectionController;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,7 @@ Route::post('/employee/login', [EmployeeController::class, 'login'])->name('empl
 Route::middleware(['auth:employee'])->group(function () {
     Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
     Route::get('/profile', [EmployeeController::class, 'employeeProfile'])->name('employee.profile');
+    Route::get('/leave-directory', [EmployeeController::class, 'leaveDirectory'])->name('employee.leave.directory');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('employee.logout');
 
@@ -84,6 +87,22 @@ Route::prefix('admin')->group(function () {
         // Profile Photo Routes (Admin)
         Route::post('/profile/photo', [ProfilePhotoController::class, 'uploadAdminPhoto'])->name('admin.profile.photo.upload');
         Route::delete('/profile/photo', [ProfilePhotoController::class, 'deleteAdminPhoto'])->name('admin.profile.photo.delete');
+
+        // Work Schedule Routes
+        Route::get('/schedules', [WorkScheduleController::class, 'index'])->name('schedules.index');
+        Route::get('/schedules/create', [WorkScheduleController::class, 'create'])->name('schedules.create');
+        Route::post('/schedules', [WorkScheduleController::class, 'store'])->name('schedules.store');
+        Route::get('/schedules/bulk-create', [WorkScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
+        Route::post('/schedules/bulk-store', [WorkScheduleController::class, 'bulkStore'])->name('schedules.bulk-store');
+        Route::get('/schedules/{id}/edit', [WorkScheduleController::class, 'edit'])->name('schedules.edit');
+        Route::put('/schedules/{id}', [WorkScheduleController::class, 'update'])->name('schedules.update');
+        Route::delete('/schedules/{id}', [WorkScheduleController::class, 'destroy'])->name('schedules.destroy');
+
+        // Attendance Correction Routes
+        Route::get('/attendance/corrections', [AttendanceCorrectionController::class, 'index'])->name('attendance.corrections.index');
+        Route::get('/attendance/corrections/{id}/edit', [AttendanceCorrectionController::class, 'edit'])->name('attendance.corrections.edit');
+        Route::put('/attendance/corrections/{id}', [AttendanceCorrectionController::class, 'update'])->name('attendance.corrections.update');
+        Route::delete('/attendance/corrections/{id}', [AttendanceCorrectionController::class, 'destroy'])->name('attendance.corrections.destroy');
     });
 
     // Edit employee
@@ -91,6 +110,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/editEmployee', [EmployeeController::class, 'editEmployee']);
     Route::get('/employeeList', [AdminController::class, 'employeeList'])->name('admin.employeeList');
     Route::get('/presentList', [AdminController::class, 'showPresentEmployees'])->name('admin.presentList');
+    Route::get('/leave-directory', [AdminController::class, 'leaveDirectory'])->name('admin.leave.directory');
 });
 
 // Generic login fallback
@@ -123,6 +143,13 @@ Route::middleware(['auth:employee'])->prefix('employee')->group(function () {
     Route::post('/leave', [LeaveRequestController::class, 'store'])->name('employee.leave.store');
     Route::get('/leave/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('employee.leave.show');
     Route::patch('/leave/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('employee.leave.cancel');
+
+    // Password Change
+    Route::post('/profile/change-password', [EmployeeController::class, 'changePassword'])->name('employee.password.change');
+
+    // Profile Photo
+    Route::post('/profile/photo', [ProfilePhotoController::class, 'uploadEmployeePhoto'])->name('employee.profile.photo.upload');
+    Route::delete('/profile/photo', [ProfilePhotoController::class, 'deleteEmployeePhoto'])->name('employee.profile.photo.delete');
 });
 
 // Employee Profile & Creation

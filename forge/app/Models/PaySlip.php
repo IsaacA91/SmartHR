@@ -16,6 +16,7 @@ class PaySlip extends Model
         'employeeID',
         'payPeriodBeginning',
         'payPeriodEnd',
+        'regularHours',
         'overtimeHours',
         'totalPayForPeriod'
     ];
@@ -23,6 +24,7 @@ class PaySlip extends Model
     protected $casts = [
         'payPeriodBeginning' => 'date',
         'payPeriodEnd' => 'date',
+        'regularHours' => 'decimal:1',
         'overtimeHours' => 'decimal:1',
         'totalPayForPeriod' => 'decimal:2'
     ];

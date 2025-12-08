@@ -122,86 +122,124 @@
     <div class="main-container">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Payslip Details</h5>
-                <a href="{{ route('employee.payroll.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
+                <h5 class="mb-0"><i class="bi bi-file-text"></i> Payslip Details</h5>
+                <div>
+                    <a href="{{ route('payslip.generate', [$employee->employeeID, $payslip->payPeriodBeginning->format('n'), $payslip->payPeriodBeginning->format('Y')]) }}" 
+                       class="btn btn-success btn-sm me-2"
+                       target="_blank">
+                        <i class="bi bi-file-pdf-fill"></i> Download PDF
+                    </a>
+                    <a href="{{ route('employee.payroll.index') }}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
             </div>
 
             <div class="card-body">
-                @if (session('status'))
-                    <div class="alert alert-{{ session('status_type', 'success') }}" role="alert">
-                        {{ session('status') }}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h6>Employee Information</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <th>Employee ID:</th>
-                                <td>{{ $employee->employeeID }}</td>
-                            </tr>
-                            <tr>
-                                <th>Name:</th>
-                                <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
-                            </tr>
-                            <tr>
-                                <th>Position:</th>
-                                <td>{{ $employee->position }}</td>
-                            </tr>
-                            <tr>
-                                <th>Base Salary:</th>
-                                <td>₱{{ number_format($employee->baseSalary, 2) }}</td>
-                            </tr>
-                        </table>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title"><i class="bi bi-person-badge"></i> Employee Information</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <th width="40%">Employee ID:</th>
+                                        <td>{{ $employee->employeeID }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Name:</th>
+                                        <td>{{ $employee->firstName }} {{ $employee->lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Position:</th>
+                                        <td>{{ $employee->position }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Base Salary:</th>
+                                        <td><strong class="text-success">₱{{ number_format($employee->baseSalary, 2) }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hourly Rate:</th>
+                                        <td><strong>₱{{ number_format($employee->rate, 2) }}/hr</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <h6>Payroll Period Information</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <th>Pay Period Start:</th>
-                                <td>{{ $payslip->payPeriodBeginning->format('M d, Y') }}</td>
-                            </tr>
-                            <tr>
-                                <th>Pay Period End:</th>
-                                <td>{{ $payslip->payPeriodEnd->format('M d, Y') }}</td>
-                            </tr>
-                            <tr>
-                                <th>Slip ID:</th>
-                                <td>{{ $payslip->slipID }}</td>
-                            </tr>
-                        </table>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title"><i class="bi bi-calendar-range"></i> Pay Period Information</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <th width="40%">Period Start:</th>
+                                        <td>{{ $payslip->payPeriodBeginning->format('M d, Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Period End:</th>
+                                        <td>{{ $payslip->payPeriodEnd->format('M d, Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Slip ID:</th>
+                                        <td><span class="badge bg-secondary">{{ $payslip->slipID }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Regular Hours:</th>
+                                        <td><span class="badge bg-info">{{ number_format($payslip->regularHours ?? 0, 1) }} hrs</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Overtime Hours:</th>
+                                        <td><span class="badge bg-warning text-dark">{{ number_format($payslip->overtimeHours, 1) }} hrs</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row mt-4">
+                <div class="row mt-3">
                     <div class="col-md-6">
-                        <h6>Earnings</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <th>Base Salary:</th>
-                                <td class="text-end">₱{{ number_format($employee->baseSalary, 2) }}</td>
-                            </tr>
-                            <tr>
-                                <th>Overtime Hours:</th>
-                                <td class="text-end">{{ number_format($payslip->overtimeHours, 1) }} hrs</td>
-                            </tr>
-                            <tr>
-                                <th>Overtime Pay (Rate: ₱{{ number_format($employee->rate, 2) }}/hr):</th>
-                                <td class="text-end">₱{{ number_format($payslip->overtimeHours * $employee->rate, 2) }}</td>
-                            </tr>
-                        </table>
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0"><i class="bi bi-cash-coin"></i> Earnings Breakdown</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm mb-0">
+                                    <tr>
+                                        <th>Base Salary:</th>
+                                        <td class="text-end">₱{{ number_format($employee->baseSalary, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Overtime Pay:</th>
+                                        <td class="text-end">₱{{ number_format($payslip->overtimeHours * $employee->rate, 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th><small class="text-muted">({{ number_format($payslip->overtimeHours, 1) }} hrs × ₱{{ number_format($employee->rate, 2) }}/hr)</small></th>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <h6>Total Compensation</h6>
-                        <table class="table table-sm">
-                            <tr class="table-primary">
-                                <th class="h5">Total Pay for Period:</th>
-                                <td class="text-end h5">₱{{ number_format($payslip->totalPayForPeriod, 2) }}</td>
-                            </tr>
-                        </table>
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0"><i class="bi bi-wallet2"></i> Total Compensation</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center py-3">
+                                    <h6 class="text-muted mb-2">Total Pay for Period</h6>
+                                    <h2 class="text-success mb-0">₱{{ number_format($payslip->totalPayForPeriod, 2) }}</h2>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

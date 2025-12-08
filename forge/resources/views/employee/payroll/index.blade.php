@@ -113,42 +113,69 @@
     <div class="main-container">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">My Payroll History</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-receipt"></i> My Payroll History</h5>
+                    <span class="badge bg-primary">{{ $payslips->total() }} Record(s)</span>
+                </div>
             </div>
 
             <div class="card-body">
-                @if (session('status'))
-                    <div class="alert alert-{{ session('status_type', 'success') }}" role="alert">
-                        {{ session('status') }}
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
                 <div class="table-responsive">
                     <table class="table table-hover">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
-                                <th>Pay Period</th>
-                                <th>Overtime Hours</th>
-                                <th>Total Pay</th>
-                                <th>Actions</th>
+                                <th><i class="bi bi-calendar-range"></i> Pay Period</th>
+                                <th><i class="bi bi-clock"></i> Regular Hours</th>
+                                <th><i class="bi bi-clock-history"></i> Overtime Hours</th>
+                                <th><i class="bi bi-cash-stack"></i> Total Pay</th>
+                                <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($payslips as $payslip)
                                 <tr>
-                                    <td>{{ $payslip->payPeriodBeginning->format('M d, Y') }} - {{ $payslip->payPeriodEnd->format('M d, Y') }}</td>
-                                    <td>{{ number_format($payslip->overtimeHours, 1) }} hrs</td>
-                                    <td>₱{{ number_format($payslip->totalPayForPeriod, 2) }}</td>
                                     <td>
-                                        <a href="{{ route('employee.payroll.show', $payslip->slipID) }}" 
-                                           class="btn btn-sm btn-primary">
-                                            View Details
-                                        </a>
+                                        <strong>{{ $payslip->payPeriodBeginning->format('M d, Y') }}</strong><br>
+                                        <small class="text-muted">to {{ $payslip->payPeriodEnd->format('M d, Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ number_format($payslip->regularHours ?? 0, 1) }} hrs</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">{{ number_format($payslip->overtimeHours, 1) }} hrs</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-success">₱{{ number_format($payslip->totalPayForPeriod, 2) }}</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('employee.payroll.show', $payslip->slipID) }}" 
+                                               class="btn btn-sm btn-primary"
+                                               title="View Details">
+                                                <i class="bi bi-eye-fill"></i> View
+                                            </a>
+                                            <a href="{{ route('payslip.generate', [$payslip->employeeID, $payslip->payPeriodBeginning->format('n'), $payslip->payPeriodBeginning->format('Y')]) }}" 
+                                               class="btn btn-sm btn-success"
+                                               target="_blank"
+                                               title="Download PDF">
+                                                <i class="bi bi-file-pdf-fill"></i> PDF
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No payroll records found.</td>
+                                    <td colspan="5" class="text-center py-4">
+                                        <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
+                                        <p class="mt-2 text-muted">No payroll records found.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

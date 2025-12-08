@@ -79,6 +79,15 @@ class AdminController extends Controller
             ->groupBy('department.departmentID', 'department.departmentName')
             ->get();
 
+        // Count pending leave requests
+        $pendingLeaveRequests = DB::table('leaverequests as l')
+            ->join('employee as e', function ($join) {
+                $join->on('l.employeeID', '=', DB::raw('e.employeeID COLLATE utf8mb4_unicode_ci'));
+            })
+            ->where('e.companyID', $companyID)
+            ->where('l.approval', '=', 'Pending')
+            ->count();
+
         return view('admindashboard', compact(
             'totalEmployees',
             'presentToday',
@@ -87,7 +96,8 @@ class AdminController extends Controller
             'recentLeaveRequests',
             'attendanceTrends',
             'departmentDistribution',
-            'companyName'
+            'companyName',
+            'pendingLeaveRequests'
         ));
     }
 
@@ -183,5 +193,34 @@ class AdminController extends Controller
         $presentToday = $query->orderBy('employee.employeeID')->paginate(10)->withQueryString();
 
         return view('presentList', compact('presentToday'));
+    }
+
+    public function leaveDirectory(Request $request)
+    {
+        $companyID = Auth::guard('admin')->user()->companyID;
+        $search = $request->get('search');
+
+        // Get all leave requests for the company with employee details
+        $query = DB::table('leaverequests as l')
+            ->join(DB::raw('(SELECT employeeID, firstName, lastName FROM employee WHERE companyID COLLATE utf8mb4_unicode_ci = ?) as e'),
+                function ($join) {
+                    $join->on('l.employeeID', '=', DB::raw('e.employeeID COLLATE utf8mb4_unicode_ci'));
+                })
+            ->select('l.*', 'e.firstName', 'e.lastName')
+            ->setBindings([$companyID]);
+
+        // Apply search filter if provided
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where(DB::raw('CONCAT(e.firstName, " ", e.lastName)'), 'LIKE', "%{$search}%")
+                  ->orWhere('l.approval', 'LIKE', "%{$search}%")
+                  ->orWhere('l.employeeID', 'LIKE', "%{$search}%")
+                  ->orWhere('l.leaveRecordID', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $leaveRequests = $query->orderBy('l.startDate', 'desc')->get();
+
+        return view('adminLeaveDirectory', compact('leaveRequests'));
     }
 }

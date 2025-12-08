@@ -539,7 +539,52 @@
                 <h3><i class="bi bi-cash-stack"></i> Employment Details</h3>
                 <h2><i class="bi bi-currency-dollar"></i> Base Salary: ${{ number_format($employee->baseSalary, 2) }}</h2>
                 <h2><i class="bi bi-clock-fill"></i> Hourly Rate: ${{ number_format($employee->rate, 2) }}</h2>
+                
+                <hr>
+                
+                <h3><i class="bi bi-shield-lock-fill"></i> Security</h3>
+                <button type="button" class="btn" onclick="document.getElementById('passwordModal').style.display='flex'" style="background: var(--primary-blue); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 0.5rem;">
+                    <i class="bi bi-key-fill"></i> Change Password
+                </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="passwordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; color: var(--primary-blue);"><i class="bi bi-key-fill"></i> Change Password</h2>
+                <button onclick="document.getElementById('passwordModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666;">&times;</button>
+            </div>
+            
+            <form action="{{ route('employee.password.change') }}" method="POST">
+                @csrf
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">Current Password</label>
+                    <input type="password" name="current_password" required style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">New Password</label>
+                    <input type="password" name="new_password" required minlength="6" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                    <small style="color: #666; font-size: 0.85rem;">Minimum 6 characters</small>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">Confirm New Password</label>
+                    <input type="password" name="new_password_confirmation" required minlength="6" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" style="flex: 1; background: var(--primary-blue); color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">
+                        <i class="bi bi-check-circle-fill"></i> Change Password
+                    </button>
+                    <button type="button" onclick="document.getElementById('passwordModal').style.display='none'" style="flex: 1; background: #6b7280; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

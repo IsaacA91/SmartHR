@@ -270,6 +270,7 @@ body {
 .card:nth-child(1) { animation-delay: 0.5s; }
 .card:nth-child(2) { animation-delay: 0.65s; }
 .card:nth-child(3) { animation-delay: 0.8s; }
+.card:nth-child(4) { animation-delay: 0.95s; }
 
 @keyframes cardSlideIn {
     from {
@@ -304,6 +305,10 @@ body {
     background: linear-gradient(90deg, #4849E8, #6366f1);
 }
 
+.card.leave-history::before {
+    background: linear-gradient(90deg, #ABC4FF, #4849E8);
+}
+
 .card:hover::before {
     height: 100%;
     opacity: 0.1;
@@ -336,6 +341,10 @@ body {
 
 .card.payroll .card-icon-wrapper {
     background: linear-gradient(135deg, rgba(72, 73, 232, 0.2), rgba(72, 73, 232, 0.05));
+}
+
+.card.leave-history .card-icon-wrapper {
+    background: linear-gradient(135deg, rgba(171, 196, 255, 0.2), rgba(72, 73, 232, 0.05));
 }
 
 .card:hover .card-icon-wrapper {
@@ -465,12 +474,12 @@ body {
             <p>Submit a new leave request</p>
         </a>
 
-        <a href="{{ route('attendance.history') }}" class="card attendance reveal" title="View Attendance">
+        <a href="{{ route('attendance.dashboard') }}" class="card attendance reveal" title="View Attendance">
             <div class="card-icon-wrapper">
                 <i class="bi bi-calendar-check" aria-hidden="true"></i>
             </div>
             <span>View Attendance</span>
-            <p>Check your attendance history</p>
+            <p>Clock in/out and track attendance</p>
         </a>
 
         <a href="{{ route('employee.payroll.index') }}" class="card payroll reveal" title="View Payroll">
@@ -479,6 +488,14 @@ body {
             </div>
             <span>View Payroll</span>
             <p>Access your payslips & earnings</p>
+        </a>
+
+        <a href="{{ route('employee.leave.directory') }}" class="card leave-history reveal" title="View Leave Requests">
+            <div class="card-icon-wrapper">
+                <i class="bi bi-calendar-x" aria-hidden="true"></i>
+            </div>
+            <span>My Leave Requests</span>
+            <p>View all your leave history</p>
         </a>
     </div>
 </div>
